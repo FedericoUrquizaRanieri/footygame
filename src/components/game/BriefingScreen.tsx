@@ -14,9 +14,11 @@ import {
   writeLabels,
   type Session,
 } from "@/lib/game-store";
+import { entryFromResult, recordResult } from "@/lib/history-store";
 import { nodeKey } from "@/lib/steps";
 import type { TodaysChallenge } from "@/lib/challenge-types";
 import { Countdown } from "./Countdown";
+import { StatsPanel } from "./StatsPanel";
 import { LevelBadge } from "./LevelBadge";
 import s from "./game.module.css";
 
@@ -28,8 +30,13 @@ export function BriefingScreen({ challenge }: { challenge: TodaysChallenge | nul
 
   useEffect(() => {
     // Lee el almacenamiento del navegador una vez montado (en el servidor no existe).
+    const saved = readTodaySession();
+    // Una partida terminada antes de existir el historial también cuenta en tus números.
+    if (saved?.result && saved.game.status !== "playing" && saved.game.status !== "ready") {
+      recordResult(entryFromResult(saved.game, saved.result, "daily"));
+    }
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setSession(readTodaySession());
+    setSession(saved);
   }, []);
 
   if (!challenge) {
@@ -125,6 +132,8 @@ export function BriefingScreen({ challenge }: { challenge: TodaysChallenge | nul
           </div>
         </>
       )}
+
+      <StatsPanel />
     </div>
   );
 }

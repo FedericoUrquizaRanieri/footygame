@@ -29,3 +29,9 @@ export function secondsUntilNextChallengeDay(now: Date | number): number {
   const elapsed = get("hour") * 3600 + get("minute") * 60 + get("second");
   return 86_400 - elapsed;
 }
+
+/** Suma (o resta) días de calendario a una fecha YYYY-MM-DD. No depende de la zona horaria. */
+export function shiftDate(date: string, days: number): string {
+  const [y, m, d] = date.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d + days)).toISOString().slice(0, 10);
+}

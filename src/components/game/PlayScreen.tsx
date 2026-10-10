@@ -7,8 +7,11 @@ import { currentNode, elapsedMs, giveUp, jumpsOf, selectNode, type GameState } f
 import { MAX_JUMPS } from "@/domain/types";
 import { useI18n } from "@/i18n/provider";
 import { fetchStep, finishChallenge, type FinishResult } from "@/lib/api-client";
+import { entryFromResult, readHistory, recordResult } from "@/lib/history-store";
 import { nodeKey, type Step, type StepItem } from "@/lib/steps";
 import { readTodaySession, writeGame, writeLabels, writeResult } from "@/lib/game-store";
+import { challengeDateFor } from "@/domain/daily-date";
+import { computeStats } from "@/domain/stats";
 import { useNow } from "@/lib/use-now";
 import { Clock } from "./Clock";
 import { GiveUpDialog } from "./GiveUpDialog";
@@ -39,6 +42,7 @@ export function PlayScreen() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [pathOpen, setPathOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [streak, setStreak] = useState(0);
   const [step, setStep] = useState<StepState>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
 
@@ -60,6 +64,8 @@ export function PlayScreen() {
         gaveUp: g.gaveUp,
       });
       writeResult(response);
+      recordResult(entryFromResult(g, response, "daily"));
+      setStreak(computeStats(readHistory(), challengeDateFor(Date.now())).currentStreak);
       setResult(response);
       setValidation("idle");
     } catch {
@@ -80,6 +86,10 @@ export function PlayScreen() {
     setGame(session.game);
     setLabels(session.labels);
     setResult(session.result);
+    if (session.result && session.game.status !== "playing") {
+      recordResult(entryFromResult(session.game, session.result, "daily"));
+      setStreak(computeStats(readHistory(), challengeDateFor(Date.now())).currentStreak);
+    }
     setReady(true);
     if (session.game.status !== "playing") {
       setDialogOpen(true);
@@ -287,6 +297,7 @@ export function PlayScreen() {
           game={game}
           labels={labels}
           result={result}
+          streak={streak}
           validation={validation}
           originName={origin}
           destinationName={destination.name}

@@ -100,7 +100,8 @@
     "summary": "See summary",
     "nextIn": "The next challenge arrives in {time}",
     "gaveUpTitle": "You gave up",
-    "gaveUpLead": "This is how to reach {to}."
+    "gaveUpLead": "This is how to reach {to}.",
+    "streak": "Streak: {days} in a row"
   },
   "difficulty": {
     "label": "Difficulty",
@@ -112,5 +113,17 @@
     "loading": "Loading",
     "player": "Player",
     "clubSeason": "Club and season"
+  },
+  "stats": {
+    "title": "Your numbers",
+    "streak": "Current streak",
+    "bestStreak": "Best streak",
+    "bestTime": "Best time",
+    "avgJumps": "Average jumps",
+    "record": "You won {won} of {played}",
+    "optimal": "{n} with the shortest path",
+    "day": "{n} day",
+    "days": "{n} days",
+    "none": "No data"
   }
 }

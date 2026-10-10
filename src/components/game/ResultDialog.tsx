@@ -18,6 +18,8 @@ interface ResultDialogProps {
   game: GameState;
   labels: Record<string, string>;
   result: FinishResult | null;
+  /** Racha actual del desafío diario, para mostrarla al ganar. */
+  streak?: number;
   validation: "idle" | "pending" | "error";
   originName: string;
   destinationName: string;
@@ -31,6 +33,7 @@ export function ResultDialog({
   game,
   labels,
   result,
+  streak = 0,
   validation,
   originName,
   destinationName,
@@ -107,6 +110,13 @@ export function ResultDialog({
         </div>
 
         {result && <LevelBadge difficulty={result.difficulty} />}
+        {won && streak > 0 && (
+          <p className={s.streakLine}>
+            {t("result.streak", {
+              days: t(streak === 1 ? "stats.day" : "stats.days", { n: streak }),
+            })}
+          </p>
+        )}
 
         {validation === "pending" && <p className={s.statusLine}>{t("result.validating")}</p>}
         {validation === "error" && (

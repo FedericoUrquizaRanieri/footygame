@@ -100,7 +100,8 @@
     "summary": "Ver resumen",
     "nextIn": "El próximo desafío llega en {time}",
     "gaveUpTitle": "Te rendiste",
-    "gaveUpLead": "Así se llegaba a {to}."
+    "gaveUpLead": "Así se llegaba a {to}.",
+    "streak": "Racha: {days} seguidos"
   },
   "difficulty": {
     "label": "Dificultad",
@@ -112,5 +113,17 @@
     "loading": "Cargando",
     "player": "Jugador",
     "clubSeason": "Club y temporada"
+  },
+  "stats": {
+    "title": "Tus números",
+    "streak": "Racha actual",
+    "bestStreak": "Mejor racha",
+    "bestTime": "Mejor tiempo",
+    "avgJumps": "Saltos promedio",
+    "record": "Ganaste {won} de {played}",
+    "optimal": "{n} por el camino más corto",
+    "day": "{n} día",
+    "days": "{n} días",
+    "none": "Sin datos"
   }
 }
