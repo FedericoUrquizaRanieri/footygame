@@ -1,4 +1,6 @@
-# Guía de interfaz [PROPUESTO]
+# Guía de interfaz
+
+> Lo implementado y sus decisiones están en [design-system](design-system.md). Esta guía conserva los principios generales.
 
 ## Identidad
 - Tema fútbol: césped, líneas de cancha, texturas de camiseta, tipografía deportiva fuerte para títulos y una sans legible para el cuerpo.

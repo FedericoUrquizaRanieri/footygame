@@ -12,13 +12,13 @@ Lógica pura con tests: grafo, BFS, conteo de saltos, límite de 20, validación
 ## Hito 3 — API segura
 `nodes/*`, `challenge/today`, `finish`, validación, rate limit, cache. Tests de integración, seguridad y rendimiento.
 
-## Hito 4 — Juego (UI)
+## Hito 4 — Juego (UI) [HECHO 2026-10-09, pendiente de tu prueba]
 Pantalla previa, juego, buscador, tarjetas, barra lateral, persistencia de partida. (HU-02, 03, 04, 09)
 
-## Hito 5 — Resultados y desafío diario
+## Hito 5 — Resultados y desafío diario [HECHO 2026-10-09, pendiente de tu prueba]
 Modal, resumen, comentario del camino óptimo, bloqueo de rejugar. (HU-08)
 
-## Hito 6 — Landing e i18n
+## Hito 6 — Landing e i18n [HECHO 2026-10-09, pendiente de tu prueba]
 Landing temática, es/en, responsive final. (HU-01, 10)
 
 ## Hito 7 — Endurecimiento y entrega

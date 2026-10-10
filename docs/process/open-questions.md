@@ -27,4 +27,7 @@
 | A3 | Fotos y escudos reales: fuente y licencia | Después de la v1 |
 | A4 | Actualización de datos después de julio de 2026 (el dataset está pausado) | Después de la v1 |
 
+| A5 | **Dificultad de los desafíos.** Con la regla actual (4–8 saltos, ≥ 2 caminos óptimos, jugadores famosos) salieron 52 de 60 desafíos de 4 saltos, varios con 15–25 caminos óptimos distintos: tienden a ser fáciles. Opciones: exigir un máximo de caminos, preferir 6 saltos, ampliar el pool de jugadores | Generación de desafíos |
+| A6 | Rate limit global: el actual es en memoria por instancia. Antes de publicar, pasar a un almacén compartido (p. ej. Upstash) | Antes de publicar |
+
 *Spike del 2026-10-08 resuelto: el dataset sí trae suplentes del banco (vía alineaciones), tiene licencia CC0 y cubre las 10 ligas, pero con ventana corta para ARG/BRA/MLS.*

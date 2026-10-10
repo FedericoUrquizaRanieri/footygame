@@ -4,7 +4,7 @@ Juego de navegador con un **desafío diario de fútbol**: te muestran dos futbol
 
 > Ejemplo: Messi → PSG 2021 → Di María → Rosario Central 2025 → Copetti (4 saltos).
 
-Inspirado en [filmlink.io/daily](https://www.filmlink.io/daily). Estado: **en desarrollo** (Fase 3: setup y tests, ver [docs/process/workflow.md](docs/process/workflow.md)).
+Inspirado en [filmlink.io/daily](https://www.filmlink.io/daily). Estado: **en desarrollo** (Fase 4: núcleo, API e interfaz hechos; falta tu prueba, ver [docs/process/workflow.md](docs/process/workflow.md)).
 
 ## Stack
 
@@ -21,10 +21,15 @@ Todo el diseño del proyecto está en [docs/](docs/README.md): visión, reglas d
 
 ## Puesta en marcha
 
+Requiere Docker (el juego usa su propio Postgres en un contenedor, puerto 5433, aislado de cualquier otro Postgres). Detalle en [docs/process/local-environment.md](docs/process/local-environment.md).
+
 ```bash
 npm install
-cp .env.example .env.local   # completar cuando exista el proyecto de Supabase
-npm run dev                  # http://localhost:3000
+npm run db:up         # genera .env.local y levanta Postgres en Docker
+npm run db:migrate    # crea el esquema
+# cargar los datos (una vez): ver "Datos" más abajo
+npm run data:challenges   # cola de desafíos (si todavía no hay uno para hoy)
+npm run dev           # http://localhost:3000  (se abre en /es o /en)
 ```
 
 ## Scripts
@@ -41,12 +46,14 @@ npm run dev                  # http://localhost:3000
 
 ## Datos (spike)
 
-Los datos provienen del dataset abierto [dcaribou/transfermarkt-datasets](https://github.com/dcaribou/transfermarkt-datasets) (CC0). Para reproducir el análisis del spike:
+Los datos provienen del dataset abierto [dcaribou/transfermarkt-datasets](https://github.com/dcaribou/transfermarkt-datasets) (CC0).
 
 ```bash
 pip install -r scripts/requirements.txt
-python scripts/spike/download.py        # ~210 MB a data/raw/ (ignorado por git)
-PYTHONUTF8=1 python scripts/spike/graph.py leagues
+python scripts/spike/download.py     # ~210 MB a data/raw/ (ignorado por git)
+npm run data:extract                 # extrae y valida -> data/processed/
+npm run data:load                    # carga a Postgres (~5 s)
+npm run data:challenges              # genera la cola de desafíos diarios
 ```
 
 Resultados y conclusiones: [docs/03-data/spike-results.md](docs/03-data/spike-results.md).

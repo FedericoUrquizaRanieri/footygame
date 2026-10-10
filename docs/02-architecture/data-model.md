@@ -1,44 +1,49 @@
-# Modelo de datos [PROPUESTO]
+# Modelo de datos
+
+Implementado en [db/migrations/001_schema.sql](../../db/migrations/001_schema.sql). Compatible con Postgres local y Supabase.
 
 ## Tablas
 
 ### `players`
 | Campo | Tipo | Nota |
 |---|---|---|
-| id | bigint PK | |
+| id | bigint PK | id de la fuente (Transfermarkt) |
 | name | text | nombre para mostrar |
-| name_search | text | normalizado (sin acentos, minúsculas) para búsqueda |
-| photo_url | text null | ver licencias en [data-sources](../03-data/data-sources.md) |
-| source_id | text | id en la fuente |
+| name_search | text | normalizado (minúsculas, sin acentos) con `normalizeText` del dominio; se usa para ordenar y buscar |
+| photo_url | text null | v1: vacío (placeholders) |
+| market_value_eur | bigint null | valor máximo de mercado; sirve para elegir jugadores conocidos al generar desafíos |
 
 ### `clubs`
-| id | name | country | logo_url | source_id |
-
-### `seasons`
-| id | label (`2021/22`) | start_year |
+`id` (bigint PK, de la fuente), `name` (nombre corto, el más frecuente en los partidos), `country`, `league` (código de competición: GB1, ES1, ...), `logo_url` (vacío en v1).
 
 ### `club_seasons` (nodo)
-| id | club_id → clubs | season_id → seasons | UNIQUE(club_id, season_id) |
+| Campo | Nota |
+|---|---|
+| id | **determinista**: `club_id * 10000 + season_year`. Estable entre cargas, así el estado guardado en el navegador no se rompe al recargar los datos |
+| club_id → clubs | |
+| season_year | año de inicio de la temporada |
+| label | `2021/22` para ligas europeas; `2025` para ligas de año calendario (Argentina, Brasil, MLS) |
+
+UNIQUE(club_id, season_year). No hay tabla `seasons` aparte: el año y la etiqueta viven en `club_seasons`.
 
 ### `player_club_seasons` (arista)
-| player_id | club_season_id | appearances (nullable, informativo) |
-PK(player_id, club_season_id). La existencia de la fila significa "integró el plantel". Índices en **ambas direcciones**: `(player_id)` y `(club_season_id)`.
+`player_id`, `club_season_id`, `source` (origen del dato; hoy `lineups`). PK(player_id, club_season_id) cubre la dirección jugador→club-temporada; el índice `(club_season_id, player_id)` cubre la inversa. La existencia de la fila significa "integró el plantel" (titular, suplente en el banco o con aparición), sin importar los minutos.
 
 ### `challenges`
-| id | date (UNIQUE) | origin_player_id | destination_player_id | optimal_length | optimal_paths_count | difficulty |
-
-El camino óptimo completo (opcional) puede almacenarse en `challenges.optimal_path jsonb`. Nunca se envía al cliente antes del fin del intento.
+`id`, `date` (UNIQUE, día de Buenos Aires), `origin_player_id`, `destination_player_id`, `optimal_length`, `optimal_paths_count`, `optimal_path` (jsonb). **Nunca se envía `optimal_*` al cliente antes de que el intento termine** (ver [security](security.md)).
 
 ## Consultas críticas
-1. Club-temporadas de un jugador: `player_club_seasons` JOIN `club_seasons` JOIN `clubs`/`seasons` WHERE player_id = ?
+1. Club-temporadas de un jugador: `player_club_seasons` JOIN `club_seasons` JOIN `clubs` WHERE player_id = ?
 2. Jugadores de un club-temporada: `player_club_seasons` JOIN `players` WHERE club_season_id = ?
 
-Ambas son lookups por índice. Volumen esperado: un plantel ≈ 25–40 jugadores y una carrera ≈ 5–20 club-temporadas.
+Ambas usan índices (0,2 ms de ejecución con los datos reales; ver [test-results](../05-testing/test-results.md)).
 
 ## Seguridad
-RLS activado en todas las tablas, sin políticas para `anon` ni `authenticated`. Ver [security](security.md).
+RLS activado en todas las tablas. Solo el rol `footygame_app` (solo lectura) tiene política; `anon`, `authenticated` y `PUBLIC` no tienen ningún permiso. Verificado por tests en [security-tests](../05-testing/security-tests.md).
 
-## Abiertos
-- Granularidad decidida: temporada (`2021/22`). En ligas de año calendario (Argentina reciente, Brasil, MLS) la etiqueta será `2025`.
-- Qué hacer con cedidos y transferencias a mitad de temporada: aparece una fila por club distinto en la misma temporada.
-- Imágenes: placeholders en la v1; `photo_url` y `logo_url` quedan vacíos por ahora.
+## Volumen actual (carga del 2026-10-09)
+27.723 jugadores · 326 clubes · 3.031 club-temporadas · 93.825 aristas.
+
+## Pendientes
+- Cedidos y transferencias a mitad de temporada: aparece una fila por club distinto en la misma temporada.
+- Imágenes reales (fotos y escudos) y su licencia.

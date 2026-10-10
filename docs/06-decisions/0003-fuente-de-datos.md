@@ -1,6 +1,6 @@
 # ADR-0003: Fuente de datos
 
-- **Estado:** Provisional — pendiente de elegir A, B o C (ver abajo)
+- **Estado:** Aceptado (opción A)
 - **Fecha:** 2026-10-08
 
 ## Contexto
@@ -12,15 +12,15 @@ El dueño propuso scraping de Transfermarkt o similar y aceptó arrancar con un 
 - Las actualizaciones del dataset están pausadas desde julio de 2026.
 - Inferir carreras desde transferencias tiene 83 % de precisión y 42 % de recall.
 
-## Opciones
+## Opciones consideradas
 - **A.** v1 con ventana 2012–2025 y solo datos confirmados por partidos.
 - **B.** A + aristas inferidas por transferencias (marcadas, con ruido).
 - **C.** A + otra fuente para ligas sudamericanas/MLS y años previos.
 
-## Decisión provisional
-Construir la v1 sobre **A**, porque es la única que cumple "jugaron juntos si o si" con datos verificables. Mantener el modelo de datos preparado para sumar aristas de otras fuentes (campo `source`/`confidence`) y reevaluar B o C luego de probar el juego.
+## Decisión
+**Opción A**, elegida por el dueño el 2026-10-08. Es la única que cumple "jugaron juntos si o si" con datos verificables. El modelo de datos queda preparado para sumar aristas de otras fuentes más adelante (campo `source`/`confidence`), y B o C se reevalúan después de probar el juego.
 
 ## Consecuencias
 - (+) Sin riesgo legal adicional (CC0).
-- (−) Sin historia previa a 2012 y poca profundidad en Argentina, Brasil y MLS.
+- (−) Sin historia previa a 2012 y poca profundidad en Argentina, Brasil y MLS. El juego debe declarar la ventana de datos.
 - (−) Dependencia de un dataset sin actualizar; las temporadas nuevas requerirán trabajo propio.
