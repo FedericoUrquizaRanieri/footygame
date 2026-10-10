@@ -1,0 +1,96 @@
+/* Figurita de jugador */
+.sticker {
+  --w: var(--sticker-w, 9rem);
+  --bg: #1f5fa8;
+  --fg: #f1f3ec;
+  display: flex;
+  flex-direction: column;
+  width: var(--w);
+  overflow: hidden;
+  border: 4px solid var(--chalk);
+  border-radius: var(--r);
+  background: var(--chalk);
+  color: var(--ink);
+  rotate: var(--tilt, 0deg);
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.22);
+}
+
+.sticker.sm {
+  --w: 7.25rem;
+}
+
+.sticker.lg {
+  --w: 11rem;
+}
+
+.sticker.target {
+  border-color: var(--sky);
+  background: var(--sky);
+}
+
+.band {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 5 / 4;
+  background-color: var(--bg);
+  background-image: repeating-linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.13) 0 0.7rem,
+    transparent 0.7rem 1.5rem
+  );
+  color: var(--fg);
+  font-family: var(--font-display);
+  font-size: calc(var(--w) * 0.36);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.name {
+  min-height: 3.1em;
+  padding: 0.5rem 0.6rem 0.6rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, calc(var(--w) * 0.14), 1.6rem);
+  font-weight: 800;
+  line-height: 1.04;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+/* Escudo de club (reemplazo del escudo real) */
+.shield {
+  --s: 4.5rem;
+  width: var(--s);
+  height: calc(var(--s) * 1.2);
+  flex: none;
+}
+
+.shield text {
+  font-family: var(--font-display);
+  font-weight: 900;
+}
+
+/* Monograma circular de jugador */
+.monogram {
+  --s: 3.25rem;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--s);
+  height: var(--s);
+  border: 3px solid var(--ring, var(--chalk));
+  border-radius: 50%;
+  background: var(--bg, #1f5fa8);
+  color: var(--fg, #f1f3ec);
+  font-family: var(--font-display);
+  font-size: calc(var(--s) * 0.46);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.mystery {
+  border-style: dashed;
+  border-color: var(--chalk-dim);
+  background: transparent;
+  color: var(--chalk-dim);
+}

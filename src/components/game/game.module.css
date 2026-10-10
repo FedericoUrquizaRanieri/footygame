@@ -1,0 +1,640 @@
+/* =====================================================================
+   Pantalla previa (briefing)
+   ===================================================================== */
+.briefing {
+  display: grid;
+  gap: 2.25rem;
+  padding-block: 1rem 4rem;
+}
+
+.briefTitle {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 1.6rem + 4.5vw, 4.8rem);
+  font-weight: 900;
+  line-height: 0.92;
+}
+
+.briefDate {
+  margin-top: 0.5rem;
+  color: var(--chalk-dim);
+}
+
+.endCaption {
+  font-size: 0.95rem;
+  color: var(--chalk-dim);
+}
+
+.briefRules {
+  display: grid;
+  gap: 0.6rem;
+  max-width: 34rem;
+  padding-left: 1rem;
+  border-left: 4px solid var(--chalk-line);
+  color: var(--chalk-dim);
+}
+
+.briefActions {
+  display: grid;
+  gap: 0.8rem;
+  max-width: 26rem;
+}
+
+.hint {
+  color: var(--chalk-dim);
+  font-size: 0.95rem;
+}
+
+.panel {
+  display: grid;
+  gap: 1rem;
+  max-width: 34rem;
+  padding: 1.4rem;
+  border: 2px solid var(--chalk-line);
+  border-radius: var(--r);
+}
+
+.panelTitle {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.countdown {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+/* =====================================================================
+   Pantalla de juego
+   ===================================================================== */
+.shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 2px solid var(--chalk-line);
+  background: var(--grass-deep);
+}
+
+.topbarRow {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: center;
+  gap: 1.1rem;
+  padding-block: 0.55rem;
+}
+
+.topStat {
+  display: grid;
+  line-height: 1;
+}
+
+.topLabel {
+  font-size: 0.78rem;
+  color: var(--chalk-dim);
+}
+
+.topValue {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 900;
+}
+
+.targetBtn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.55rem;
+  min-height: 2.75rem;
+  min-width: 0;
+  padding: 0.2rem 0.5rem;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--chalk-line);
+  cursor: pointer;
+  text-align: left;
+}
+
+.targetBtn .targetName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.drawer {
+  padding-block: 0.75rem 1rem;
+  max-height: 55dvh;
+  overflow: auto;
+  border-top: 2px solid var(--chalk-line);
+}
+
+.main {
+  min-width: 0;
+  padding-block: 0.5rem 4rem;
+}
+
+.sidebar {
+  display: none;
+}
+
+.current {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  padding-block: 1rem 0.5rem;
+}
+
+.currentText {
+  min-width: 0;
+}
+
+/* Destino del foco programático al cambiar de nodo: no es un control, no lleva recuadro. */
+.currentText:focus {
+  outline: none;
+}
+
+.youAre {
+  color: var(--chalk-dim);
+  font-size: 0.95rem;
+}
+
+.currentName {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 1.2rem + 5vw, 4.2rem);
+  font-weight: 900;
+  line-height: 0.92;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.currentSub {
+  display: inline-block;
+  margin-top: 0.45rem;
+  padding: 0.1rem 0.7rem;
+  border-radius: var(--r-sm);
+  box-shadow: inset 0 0 0 2px var(--chalk);
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.listHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.listTitle {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.count {
+  font-size: 0.9rem;
+  color: var(--chalk-dim);
+}
+
+.search {
+  position: relative;
+  margin-block: 0.7rem 1rem;
+}
+
+.searchInput {
+  width: 100%;
+  min-height: 3.25rem;
+  padding: 0 3.25rem 0 1rem;
+  border: 2px solid var(--chalk-dim);
+  border-radius: var(--r);
+  background: rgba(10, 42, 28, 0.75);
+  color: var(--chalk);
+  font-size: 1.05rem;
+}
+
+.searchInput::-webkit-search-cancel-button {
+  appearance: none;
+  display: none;
+}
+
+.searchInput::placeholder {
+  color: var(--chalk-dim);
+}
+
+.clear {
+  position: absolute;
+  top: 50%;
+  right: 0.3rem;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  translate: 0 -50%;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--chalk);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.75rem, 1fr));
+  gap: 0.7rem;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+  width: 100%;
+  min-height: 8.4rem;
+  padding: 0.85rem;
+  border: 0;
+  border-radius: var(--r);
+  background: rgba(10, 42, 28, 0.66);
+  box-shadow: inset 0 0 0 2px var(--chalk-line);
+  color: var(--chalk);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    box-shadow 120ms ease,
+    background-color 120ms ease,
+    transform 120ms ease;
+}
+
+.card:hover {
+  background: rgba(10, 42, 28, 0.95);
+  box-shadow: inset 0 0 0 2px var(--chalk);
+}
+
+.card:active {
+  transform: scale(0.98);
+}
+
+.card.isTarget {
+  background: rgba(138, 212, 245, 0.16);
+  box-shadow: inset 0 0 0 3px var(--sky);
+}
+
+.cardText {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.cardName {
+  font-weight: 700;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.cardSub {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--chalk-dim);
+}
+
+.targetTag {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  padding: 0.05rem 0.5rem;
+  border-radius: 6px;
+  background: var(--sky);
+  color: var(--ink);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.skeleton {
+  min-height: 8.4rem;
+  border-radius: var(--r);
+  background: rgba(241, 243, 236, 0.08);
+}
+
+.notice {
+  display: grid;
+  justify-items: start;
+  gap: 0.75rem;
+  max-width: 30rem;
+  padding: 1.25rem;
+  border-radius: var(--r);
+  box-shadow: inset 0 0 0 2px var(--chalk-line);
+}
+
+.noticeTitle {
+  font-weight: 700;
+}
+
+.noticeText {
+  color: var(--chalk-dim);
+}
+
+/* =====================================================================
+   Marcador (barra lateral en escritorio)
+   ===================================================================== */
+.scoreboard {
+  display: grid;
+  gap: 1.1rem;
+  padding: 1.1rem;
+  border: 2px solid var(--chalk);
+  border-radius: var(--r);
+  background: var(--grass-deep);
+}
+
+.scoreLabel {
+  font-size: 0.9rem;
+  color: var(--chalk-dim);
+}
+
+.clock {
+  display: inline-flex;
+  font-family: var(--font-display);
+  font-weight: 900;
+  line-height: 0.9;
+}
+
+.clock.big {
+  font-size: 4.6rem;
+}
+
+.digit {
+  display: inline-block;
+  width: 0.54em;
+  text-align: center;
+}
+
+.colon {
+  display: inline-block;
+  width: 0.3em;
+  text-align: center;
+}
+
+.jumpsLine {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.jumpsBig {
+  font-size: 3rem;
+}
+
+.jumpsOf {
+  font-size: 1.4rem;
+  color: var(--chalk-dim);
+}
+
+.pips {
+  display: grid;
+  grid-template-columns: repeat(20, 1fr);
+  gap: 3px;
+  margin-top: 0.6rem;
+}
+
+.pip {
+  height: 0.9rem;
+  border-radius: 3px;
+  background: var(--chalk-line);
+}
+
+.pip.on {
+  background: var(--chalk);
+}
+
+.pip.warn {
+  background: var(--red-text);
+}
+
+.lastJump {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  border-left: 4px solid var(--red-text);
+  color: var(--red-text);
+  font-weight: 700;
+}
+
+.sideBlock {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.sideTitle {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.sideNote {
+  font-size: 0.9rem;
+  color: var(--chalk-dim);
+}
+
+/* =====================================================================
+   Cadena de nodos (camino)
+   ===================================================================== */
+.chain {
+  display: grid;
+  gap: 0;
+}
+
+.chainItem {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.2rem 1fr;
+  column-gap: 0.7rem;
+  align-items: center;
+  min-height: 2.9rem;
+}
+
+.chainItem:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: calc(1.1rem - 2px);
+  top: 2.5rem;
+  bottom: -0.4rem;
+  border-left: 3px dotted var(--chain-line, var(--chalk-dim));
+}
+
+.chainLabel {
+  min-width: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+/* =====================================================================
+   Diálogo de resultados
+   ===================================================================== */
+.dialog {
+  --ring: var(--ink);
+  --chain-line: var(--ink-dim);
+  width: min(36rem, 100% - 2rem);
+  max-height: min(92dvh, 56rem);
+  padding: 0;
+  border: 0;
+  border-radius: var(--r);
+  overflow: auto;
+}
+
+.dialog::backdrop {
+  background: rgba(6, 24, 16, 0.8);
+}
+
+.dialogHead {
+  padding: 1.4rem 1.5rem 1.2rem;
+  background: var(--grass);
+  color: var(--chalk);
+}
+
+.dialogHead.lost {
+  background: var(--card-red);
+}
+
+.dialogTitle {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 2rem + 2vw, 3.2rem);
+  font-weight: 900;
+  line-height: 0.95;
+}
+
+.dialogTitle:focus {
+  outline: none;
+}
+
+.dialogLead {
+  margin-top: 0.4rem;
+}
+
+.dialogBody {
+  display: grid;
+  gap: 1.3rem;
+  padding: 1.3rem 1.5rem 1.5rem;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.stat {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.8rem 0.9rem;
+  border-radius: var(--r-sm);
+  box-shadow: inset 0 0 0 2px var(--ink);
+}
+
+.statLabel {
+  font-size: 0.85rem;
+  color: var(--ink-dim);
+}
+
+.statValue {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 900;
+  line-height: 0.95;
+}
+
+.compare {
+  color: var(--ink);
+}
+
+.pathCols {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.pathTitle {
+  margin-bottom: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.dialogActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.dialog :global(.btn-primary) {
+  box-shadow: inset 0 0 0 2px var(--ink);
+}
+
+.dialog :global(.btn-ghost) {
+  color: var(--ink);
+  box-shadow: inset 0 0 0 2px var(--ink);
+}
+
+.dialog :global(.btn-ghost):hover {
+  background: rgba(14, 34, 25, 0.08);
+}
+
+.statusLine {
+  color: var(--ink-dim);
+}
+
+/* =====================================================================
+   Escritorio
+   ===================================================================== */
+@media (min-width: 980px) {
+  .shell {
+    grid-template-columns: minmax(0, 1fr) 21rem;
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  .topbar {
+    display: none;
+  }
+
+  .sidebar {
+    position: sticky;
+    top: 1rem;
+    display: grid;
+    gap: 1.5rem;
+    max-height: calc(100dvh - 2rem);
+    padding-block: 1rem;
+    overflow: auto;
+  }
+
+  .main {
+    padding-block: 1rem 4rem;
+  }
+}
+
+@media (min-width: 560px) {
+  .pathCols {
+    grid-template-columns: 1fr 1fr;
+  }
+}
