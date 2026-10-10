@@ -35,3 +35,28 @@
 
 ## Reglas de generación de desafíos
 Ver [challenge-generation](../03-data/challenge-generation.md).
+
+## Mejoras de juego (v1.1)
+Decisiones tomadas el 2026-10-10 al pasar a las mejoras de juego. Todas son **[PROPUESTO]** hasta que el dueño las confirme probándolas.
+
+### Dificultad
+- Cada desafío tiene un nivel: **fácil**, **media** o **difícil**, visible antes de empezar.
+- Se calcula con un puntaje: camino más largo suma; pocos caminos óptimos suman; jugadores menos conocidos suman; muchos caminos óptimos y jugadores muy conocidos restan. Detalle en [challenge-generation](../03-data/challenge-generation.md).
+- El nivel sigue un patrón semanal: lunes y martes fácil, miércoles y jueves media, viernes y sábado difícil, domingo media.
+
+### Rendirse
+- Después de Empezar se puede **rendirse** (con confirmación).
+- Cuenta como derrota: termina la partida, corta la racha y muestra el camino más corto.
+
+### Racha y estadísticas
+- Solo cuenta el **desafío diario**. Racha = días seguidos **ganados**; perder o no jugar un día la corta. Si hoy todavía no se jugó, la racha sigue viva hasta que termine el día.
+- Estadísticas personales: partidas, victorias, racha actual y mejor racha, mejor tiempo, saltos promedio y cuántas veces se resolvió por el camino más corto.
+- Se guardan solo en el navegador (sin cuentas): si se borra el almacenamiento, se pierden.
+
+### Desafíos pasados (práctica)
+- Se pueden jugar los desafíos de días anteriores. **No cuentan** para la racha ni para las estadísticas del diario.
+- Cada desafío pasado se juega una vez por navegador (queda su resumen).
+
+### Orden de las listas
+- Jugadores de un plantel: **más conocidos primero** (valor de mercado) y, a igualdad, por nombre.
+- Club-temporadas de un jugador: **más recientes primero**.

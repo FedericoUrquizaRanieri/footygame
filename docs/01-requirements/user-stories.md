@@ -52,3 +52,24 @@ Como jugador quiero que recargar no me haga perder el progreso.
 ## HU-10 Usar el juego en el celular
 - Todas las pantallas son usables en 360 px de ancho.
 - La barra de tiempo y saltos sigue visible sin tapar las tarjetas.
+
+## HU-11 Saber qué tan difícil es
+- Antes de empezar veo el nivel del desafío (fácil, media o difícil).
+- El nivel coincide con el patrón semanal y con el puntaje calculado al generar el desafío.
+
+## HU-12 Rendirme
+- Después de Empezar puedo rendirme; la app me pide confirmación.
+- Al confirmar, la partida termina como derrota, veo el camino más corto y mi racha se corta.
+
+## HU-13 Ver mi racha y mis números
+- Veo mi racha actual, mi mejor racha, mi mejor tiempo y mis saltos promedio.
+- Si no jugué hoy pero ayer gané, mi racha sigue visible y no se corta todavía.
+- Los desafíos pasados no modifican estos números.
+
+## HU-14 Encontrar rápido a los jugadores conocidos
+- En un plantel, los jugadores más conocidos aparecen primero.
+- En un jugador, sus clubes más recientes aparecen primero.
+
+## HU-15 Jugar desafíos pasados
+- Puedo ver la lista de desafíos anteriores con su nivel y mi resultado si ya lo jugué.
+- Puedo jugar uno que no jugué, con las mismas reglas, y ver su resumen.
