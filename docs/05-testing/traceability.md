@@ -1,6 +1,6 @@
 # Trazabilidad requisito → test
 
-Estado al 2026-10-09. 186 tests en verde ([test-results](test-results.md)).
+Estado al 2026-10-10. 271 tests en verde ([test-results](test-results.md)).
 
 | Historia / Requisito | Tipo | Test | Estado |
 |---|---|---|---|
@@ -32,3 +32,10 @@ Estado al 2026-10-09. 186 tests en verde ([test-results](test-results.md)).
 | HU-10, RNF-20 | Manual | Celular 390 px y escritorio 1360 px | Hecho (verificado por Claude; falta tu prueba en un teléfono real) |
 | RNF-02 (P-06), P-07 | Rendimiento | LCP móvil y peso del bundle con Lighthouse | Pendiente |
 | RF-32, HU-01, HU-08 | Manual (dueño) | Recorridos de usuario | Pendiente: te toca probar |
+| HU-11 | Unitario + integración | `difficulty.test.ts` (puntaje, niveles, patrón semanal), `tests/api/challenge.test.ts` (nivel en el desafío y en el resumen) | Hecho |
+| HU-12 | Unitario + integración | `game.test.ts`, `persistence.test.ts`, `validate-path.test.ts` (rendirse), `challenge.test.ts` (`gaveUp` válido, inválido y no booleano) | Hecho |
+| HU-13 | Unitario | `stats.test.ts` (20 casos de racha y estadísticas), `history-store.test.ts`, `entry-from-result.test.ts` | Hecho |
+| HU-14 | Integración | `tests/api/nodes.test.ts`: planteles por valor de mercado, carreras por recencia | Hecho |
+| HU-15 | Unitario + integración | `daily-date.test.ts` (`isArchiveDate`), `game-store.test.ts` (sesiones por fecha), `archive.test.ts` (lista y consulta) | Hecho |
+| HU-11 a HU-15 | Manual | Recorrido en el navegador: nivel, rendirse, números, lista y práctica | Hecho (verificado por Claude; falta tu prueba) |
+

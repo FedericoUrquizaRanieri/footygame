@@ -72,6 +72,8 @@ export function testDates(now = Date.now()) {
   return {
     today: challengeDateFor(now),
     tomorrow: challengeDateFor(now + 86_400_000),
+    yesterday: challengeDateFor(now - 86_400_000),
+    twoDaysAgo: challengeDateFor(now - 2 * 86_400_000),
   };
 }
 
@@ -134,6 +136,23 @@ export async function seedTestDb(adminUrl: string): Promise<void> {
       "hard",
       4,
     ]);
+    const { yesterday, twoDaysAgo } = testDates();
+    for (const [date, from, level, score] of [
+      [yesterday, NEYMAR, "medium", 1],
+      [twoDaysAgo, MBAPPE, "hard", 3],
+    ] as const) {
+      const analysis = analyzeChallenge(miniGraph, from, COPETTI)!;
+      await client.query(insert, [
+        date,
+        from,
+        COPETTI,
+        analysis.optimalLength,
+        analysis.optimalPathsCount,
+        JSON.stringify(analysis.optimalPath),
+        level,
+        score,
+      ]);
+    }
     await client.query("commit");
   } catch (error) {
     await client.query("rollback");

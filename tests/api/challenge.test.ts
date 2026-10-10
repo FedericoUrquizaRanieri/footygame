@@ -171,6 +171,21 @@ describe.skipIf(!hasDb)("POST /api/challenge/finish (integración)", () => {
     });
   });
 
+  it("un desafío pasado se puede cerrar (práctica) y devuelve su resumen", async () => {
+    const id = await challengeId(testDates().yesterday);
+    // Neymar -> PSG 2021 -> Di María -> Rosario Central 2025 -> Copetti
+    const path = [
+      { type: "player", id: 4 },
+      { type: "club-season", id: PSG_2021 },
+      { type: "player", id: DI_MARIA },
+      { type: "club-season", id: ROSARIO_2025 },
+      { type: "player", id: COPETTI },
+    ];
+    const res = await post({ challengeId: id, path, elapsedMs: 4 * MIN_MS_PER_JUMP + 5000 });
+    expect(res.status).toBe(200);
+    expect(await res.json()).toMatchObject({ valid: true, result: "won", difficulty: "medium" });
+  });
+
   it("un desafío futuro no existe todavía: 404 (no se puede espiar la solución)", async () => {
     const id = await challengeId(testDates().tomorrow);
     const res = await post({ challengeId: id, path: winPath, elapsedMs: 60_000 });

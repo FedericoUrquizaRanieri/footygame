@@ -762,3 +762,131 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
+
+/* =====================================================================
+   Desafíos anteriores
+   ===================================================================== */
+.briefLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.briefLinks :global(.btn) {
+  min-height: 2.75rem;
+  padding: 0.35rem 1.1rem;
+  font-size: 1.25rem;
+}
+
+.archive {
+  display: grid;
+  gap: 1.5rem;
+  padding-block: 1rem 4rem;
+}
+
+.archiveTitle {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 1.6rem + 4vw, 4.2rem);
+  font-weight: 900;
+  line-height: 0.92;
+}
+
+.archiveNote {
+  max-width: 36rem;
+  margin-top: 0.6rem;
+  color: var(--chalk-dim);
+}
+
+.archiveList {
+  display: grid;
+  gap: 0.6rem;
+  max-width: 48rem;
+}
+
+.archiveRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "date status"
+    "route route"
+    "level level";
+  gap: 0.35rem 1rem;
+  align-items: center;
+  padding: 0.9rem 1rem;
+  border-radius: var(--r);
+  box-shadow: inset 0 0 0 2px var(--chalk-line);
+  color: var(--chalk);
+  text-decoration: none;
+  transition:
+    box-shadow 120ms ease,
+    background-color 120ms ease;
+}
+
+.archiveRow:hover {
+  background: rgba(10, 42, 28, 0.9);
+  box-shadow: inset 0 0 0 2px var(--chalk);
+}
+
+.archiveDate {
+  grid-area: date;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.archiveRoute {
+  grid-area: route;
+  overflow-wrap: anywhere;
+}
+
+.archiveLevel {
+  grid-area: level;
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  color: var(--chalk-dim);
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.chip {
+  grid-area: status;
+  justify-self: end;
+  padding: 0.2rem 0.75rem;
+  border-radius: var(--r-sm);
+  font-weight: 700;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  box-shadow: inset 0 0 0 2px var(--chalk-dim);
+}
+
+.chipNew {
+  background: var(--card-yellow);
+  color: var(--ink);
+  box-shadow: none;
+}
+
+.chipWon {
+  background: var(--chalk);
+  color: var(--ink);
+  box-shadow: none;
+}
+
+.chipLost {
+  color: var(--red-text);
+  box-shadow: inset 0 0 0 2px var(--red-text);
+}
+
+.chipPlaying {
+  color: var(--sky);
+  box-shadow: inset 0 0 0 2px var(--sky);
+}
+
+@media (min-width: 720px) {
+  .archiveRow {
+    grid-template-columns: 9rem 1fr auto auto;
+    grid-template-areas: "date route level status";
+    gap: 1rem;
+  }
+}

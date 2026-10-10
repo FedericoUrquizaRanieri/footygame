@@ -20,6 +20,8 @@ interface ResultDialogProps {
   result: FinishResult | null;
   /** Racha actual del desafío diario, para mostrarla al ganar. */
   streak?: number;
+  /** "archive": desafío pasado (sin racha ni cuenta regresiva, y el botón principal lleva a la lista). */
+  variant?: "daily" | "archive";
   validation: "idle" | "pending" | "error";
   originName: string;
   destinationName: string;
@@ -34,6 +36,7 @@ export function ResultDialog({
   labels,
   result,
   streak = 0,
+  variant = "daily",
   validation,
   originName,
   destinationName,
@@ -110,7 +113,7 @@ export function ResultDialog({
         </div>
 
         {result && <LevelBadge difficulty={result.difficulty} />}
-        {won && streak > 0 && (
+        {variant === "daily" && won && streak > 0 && (
           <p className={s.streakLine}>
             {t("result.streak", {
               days: t(streak === 1 ? "stats.day" : "stats.days", { n: streak }),
@@ -152,13 +155,18 @@ export function ResultDialog({
           )}
         </div>
 
-        <p className={s.statusLine}>
-          {t("result.nextIn", { time: "" }).trim()} <Countdown />
-        </p>
+        {variant === "daily" && (
+          <p className={s.statusLine}>
+            {t("result.nextIn", { time: "" }).trim()} <Countdown />
+          </p>
+        )}
 
         <div className={s.dialogActions}>
-          <Link className="btn btn-primary" href={`/${locale}`}>
-            {t("result.home")}
+          <Link
+            className="btn btn-primary"
+            href={variant === "archive" ? `/${locale}/archive` : `/${locale}`}
+          >
+            {variant === "archive" ? t("archive.backToList") : t("result.home")}
           </Link>
           <button type="button" className="btn btn-ghost" onClick={onClose}>
             {t("result.close")}

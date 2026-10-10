@@ -125,5 +125,21 @@
     "day": "{n} day",
     "days": "{n} days",
     "none": "No data"
+  },
+  "archive": {
+    "link": "Past challenges",
+    "title": "Past challenges",
+    "note": "Play the days you missed. It is practice: it doesn't count for your streak or your numbers.",
+    "empty": "There are no past challenges yet.",
+    "emptyHint": "Once the first day goes by, you will find it here.",
+    "route": "From {from} to {to}",
+    "statusWon": "Won",
+    "statusLost": "Lost",
+    "statusPlaying": "In progress",
+    "statusNew": "Play",
+    "briefTitle": "Challenge of {date}",
+    "doneTitle": "You already played this challenge",
+    "practiceNote": "This is practice: it doesn't count for your streak.",
+    "backToList": "More challenges"
   }
 }

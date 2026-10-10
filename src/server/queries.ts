@@ -34,6 +34,27 @@ export async function getChallengeForDate(date: string): Promise<TodaysChallenge
   };
 }
 
+/** Desafíos anteriores a `before` (YYYY-MM-DD), del más reciente al más antiguo. Sin la solución. */
+export async function getArchiveList(before: string, limit: number): Promise<TodaysChallenge[]> {
+  const { rows } = await getPool().query(
+    `select c.id, ${DATE_SQL} as date, c.difficulty, o.id as o_id, o.name as o_name, d.id as d_id, d.name as d_name
+       from challenges c
+       join players o on o.id = c.origin_player_id
+       join players d on d.id = c.destination_player_id
+      where c.date < $1::date
+      order by c.date desc
+      limit $2`,
+    [before, limit],
+  );
+  return rows.map((r) => ({
+    id: r.id,
+    date: r.date,
+    origin: { id: r.o_id, name: r.o_name },
+    destination: { id: r.d_id, name: r.d_name },
+    difficulty: r.difficulty,
+  }));
+}
+
 export async function getChallengeWithSolution(id: number): Promise<ChallengeWithSolution | null> {
   const { rows } = await getPool().query(
     `select c.id, ${DATE_SQL} as date, c.origin_player_id, c.destination_player_id,

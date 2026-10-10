@@ -3,6 +3,8 @@ import { createGame, selectNode, startGame } from "@/domain/game";
 import { clubSeasonNode, playerNode } from "@/domain/types";
 import {
   clearSession,
+  readArchiveSession,
+  readArchiveStatuses,
   readTodaySession,
   writeGame,
   writeLabels,
@@ -93,5 +95,65 @@ describe("game-store", () => {
     delete (globalThis as { window?: unknown }).window;
     expect(() => writeGame(startGame(createGame(challenge), NOW))).not.toThrow();
     expect(readTodaySession(NOW)).toBeNull();
+  });
+});
+
+describe("sesiones de desafíos pasados", () => {
+  const past = { id: 3, date: "2026-10-04", originId: 1, destinationId: 3 };
+  const other = { id: 4, date: "2026-10-05", originId: 1, destinationId: 3 };
+  const scope = (date: string) => ({ archive: date });
+
+  it("se guardan aparte del desafío diario", () => {
+    const game = startGame(createGame(past), NOW);
+    writeGame(game, scope(past.date));
+    expect(readTodaySession(NOW)).toBeNull();
+    expect(readArchiveSession(past.date)?.game).toEqual(game);
+  });
+
+  it("una partida de práctica no se descarta por ser de otro día", () => {
+    writeGame(startGame(createGame(past), NOW), scope(past.date));
+    expect(readArchiveSession(past.date)).not.toBeNull();
+  });
+
+  it("cada fecha tiene su propia sesión, con sus etiquetas y su resultado", () => {
+    writeGame(startGame(createGame(past), NOW), scope(past.date));
+    writeLabels({ "p:1": "A" }, scope(past.date));
+    writeGame(startGame(createGame(other), NOW), scope(other.date));
+    writeResult(result, scope(other.date));
+    expect(readArchiveSession(past.date)?.labels).toEqual({ "p:1": "A" });
+    expect(readArchiveSession(past.date)?.result).toBeNull();
+    expect(readArchiveSession(other.date)?.result).toEqual(result);
+  });
+
+  it("clearSession con una fecha solo borra esa", () => {
+    writeGame(startGame(createGame(past), NOW), scope(past.date));
+    writeGame(startGame(createGame(other), NOW), scope(other.date));
+    clearSession(scope(past.date));
+    expect(readArchiveSession(past.date)).toBeNull();
+    expect(readArchiveSession(other.date)).not.toBeNull();
+  });
+
+  it("ignora una sesión guardada bajo otra fecha de desafío", () => {
+    writeGame(startGame(createGame(other), NOW), scope(past.date));
+    expect(readArchiveSession(past.date)).toBeNull();
+  });
+
+  it("no pisa la partida del día", () => {
+    const today = { ...challenge };
+    writeGame(startGame(createGame(today), NOW));
+    writeGame(startGame(createGame(past), NOW), scope(past.date));
+    expect(readTodaySession(NOW)?.game.challenge.date).toBe("2026-10-09");
+  });
+
+  it("readArchiveStatuses informa el estado de cada fecha jugada", () => {
+    let won = startGame(createGame(past), NOW);
+    won = selectNode(won, clubSeasonNode(10), NOW + 1);
+    won = selectNode(won, playerNode(3), NOW + 2);
+    writeGame(won, scope(past.date));
+    writeGame(startGame(createGame(other), NOW), scope(other.date));
+    expect(readArchiveStatuses([past.date, other.date, "2026-10-01"])).toEqual({
+      [past.date]: "won",
+      [other.date]: "playing",
+    });
   });
 });

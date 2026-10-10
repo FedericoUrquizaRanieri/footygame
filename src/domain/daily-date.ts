@@ -35,3 +35,11 @@ export function shiftDate(date: string, days: number): string {
   const [y, m, d] = date.split("-").map(Number);
   return new Date(Date.UTC(y, m - 1, d + days)).toISOString().slice(0, 10);
 }
+
+/** ¿Es `date` una fecha real (YYYY-MM-DD) anterior a `today`? Define qué desafíos se pueden jugar de práctica. */
+export function isArchiveDate(date: string, today: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return false;
+  // Una fecha imposible (2026-02-30) no sobrevive al viaje de ida y vuelta por el calendario.
+  if (shiftDate(date, 0) !== date) return false;
+  return date < today;
+}

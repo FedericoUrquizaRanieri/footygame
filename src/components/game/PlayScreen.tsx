@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Monogram } from "@/components/ui/Monogram";
 import { currentNode, elapsedMs, giveUp, jumpsOf, selectNode, type GameState } from "@/domain/game";
 import { MAX_JUMPS } from "@/domain/types";
@@ -9,7 +9,14 @@ import { useI18n } from "@/i18n/provider";
 import { fetchStep, finishChallenge, type FinishResult } from "@/lib/api-client";
 import { entryFromResult, readHistory, recordResult } from "@/lib/history-store";
 import { nodeKey, type Step, type StepItem } from "@/lib/steps";
-import { readTodaySession, writeGame, writeLabels, writeResult } from "@/lib/game-store";
+import {
+  readArchiveSession,
+  readTodaySession,
+  writeGame,
+  writeLabels,
+  writeResult,
+  type Scope,
+} from "@/lib/game-store";
 import { challengeDateFor } from "@/domain/daily-date";
 import { computeStats } from "@/domain/stats";
 import { useNow } from "@/lib/use-now";
@@ -30,9 +37,24 @@ type StepState =
 type Validation = "idle" | "pending" | "error";
 
 /** Pantalla de juego: nodo actual, buscador, opciones, y el marcador con tiempo y saltos. */
-export function PlayScreen() {
+interface PlayScreenProps {
+  /** "daily": el desafío de hoy. "archive": un desafío pasado, de práctica. */
+  mode?: "daily" | "archive";
+  /** Fecha del desafío pasado (solo en modo archive). */
+  date?: string;
+}
+
+export function PlayScreen({ mode = "daily", date }: PlayScreenProps) {
   const { locale, t } = useI18n();
   const router = useRouter();
+
+  const archive = mode === "archive" && date !== undefined;
+  const scope = useMemo<Scope>(
+    () => (mode === "archive" && date !== undefined ? { archive: date } : "daily"),
+    [mode, date],
+  );
+  const base = archive ? `/${locale}/archive/${date}` : `/${locale}/daily`;
+  const recordMode = archive ? "archive" : "daily";
 
   const [ready, setReady] = useState(false);
   const [game, setGame] = useState<GameState | null>(null);
@@ -54,30 +76,35 @@ export function PlayScreen() {
   const playing = game?.status === "playing";
   const now = useNow(playing ? 250 : null);
 
-  const runFinish = useCallback(async (g: GameState) => {
-    setValidation("pending");
-    try {
-      const response = await finishChallenge({
-        challengeId: g.challenge.id,
-        path: g.path,
-        elapsedMs: (g.finishedAt ?? Date.now()) - (g.startedAt ?? Date.now()),
-        gaveUp: g.gaveUp,
-      });
-      writeResult(response);
-      recordResult(entryFromResult(g, response, "daily"));
-      setStreak(computeStats(readHistory(), challengeDateFor(Date.now())).currentStreak);
-      setResult(response);
-      setValidation("idle");
-    } catch {
-      setValidation("error");
-    }
-  }, []);
+  const runFinish = useCallback(
+    async (g: GameState) => {
+      setValidation("pending");
+      try {
+        const response = await finishChallenge({
+          challengeId: g.challenge.id,
+          path: g.path,
+          elapsedMs: (g.finishedAt ?? Date.now()) - (g.startedAt ?? Date.now()),
+          gaveUp: g.gaveUp,
+        });
+        writeResult(response, scope);
+        recordResult(entryFromResult(g, response, recordMode));
+        if (!archive) {
+          setStreak(computeStats(readHistory(), challengeDateFor(Date.now())).currentStreak);
+        }
+        setResult(response);
+        setValidation("idle");
+      } catch {
+        setValidation("error");
+      }
+    },
+    [scope, recordMode, archive],
+  );
 
   // Carga la partida guardada. Sin partida iniciada hoy, vuelve a la pantalla previa.
   useEffect(() => {
-    const session = readTodaySession();
+    const session = archive && date ? readArchiveSession(date) : readTodaySession();
     if (!session || session.game.status === "ready") {
-      router.replace(`/${locale}/daily`);
+      router.replace(base);
       return;
     }
     gameRef.current = session.game;
@@ -87,8 +114,10 @@ export function PlayScreen() {
     setLabels(session.labels);
     setResult(session.result);
     if (session.result && session.game.status !== "playing") {
-      recordResult(entryFromResult(session.game, session.result, "daily"));
-      setStreak(computeStats(readHistory(), challengeDateFor(Date.now())).currentStreak);
+      recordResult(entryFromResult(session.game, session.result, recordMode));
+      if (!archive) {
+        setStreak(computeStats(readHistory(), challengeDateFor(Date.now())).currentStreak);
+      }
     }
     setReady(true);
     if (session.game.status !== "playing") {
@@ -96,7 +125,7 @@ export function PlayScreen() {
       if (!session.result) void runFinish(session.game);
     }
     /* eslint-enable react-hooks/set-state-in-effect */
-  }, [locale, router, runFinish]);
+  }, [archive, base, date, recordMode, router, runFinish]);
 
   const node = game ? currentNode(game) : null;
   const nodeId = node ? nodeKey(node) : null;
@@ -136,8 +165,8 @@ export function PlayScreen() {
       }
       gameRef.current = next;
       labelsRef.current = { ...labelsRef.current, [nodeKey(item.node)]: item.fullLabel };
-      writeGame(next);
-      writeLabels(labelsRef.current);
+      writeGame(next, scope);
+      writeLabels(labelsRef.current, scope);
       setLabels(labelsRef.current);
       setGame(next);
       setPathOpen(false);
@@ -147,7 +176,7 @@ export function PlayScreen() {
         void runFinish(next);
       }
     },
-    [runFinish],
+    [runFinish, scope],
   );
 
   const onGiveUp = useCallback(() => {
@@ -160,14 +189,14 @@ export function PlayScreen() {
       return;
     }
     gameRef.current = next;
-    writeGame(next);
+    writeGame(next, scope);
     setGame(next);
     setConfirmOpen(false);
     setPathOpen(false);
     window.scrollTo({ top: 0 });
     setDialogOpen(true);
     void runFinish(next);
-  }, [runFinish]);
+  }, [runFinish, scope]);
 
   if (!ready || !game || !node) {
     return (
@@ -298,6 +327,7 @@ export function PlayScreen() {
           labels={labels}
           result={result}
           streak={streak}
+          variant={archive ? "archive" : "daily"}
           validation={validation}
           originName={origin}
           destinationName={destination.name}

@@ -125,5 +125,21 @@
     "day": "{n} día",
     "days": "{n} días",
     "none": "Sin datos"
+  },
+  "archive": {
+    "link": "Desafíos anteriores",
+    "title": "Desafíos anteriores",
+    "note": "Jugá los días que te perdiste. Es práctica: no cuenta para tu racha ni para tus números.",
+    "empty": "Todavía no hay desafíos anteriores.",
+    "emptyHint": "Cuando pase el primer día, vas a encontrarlo acá.",
+    "route": "De {from} a {to}",
+    "statusWon": "Ganado",
+    "statusLost": "Perdido",
+    "statusPlaying": "En curso",
+    "statusNew": "Jugar",
+    "briefTitle": "Desafío del {date}",
+    "doneTitle": "Ya jugaste este desafío",
+    "practiceNote": "Es práctica: no cuenta para tu racha.",
+    "backToList": "Ver más desafíos"
   }
 }

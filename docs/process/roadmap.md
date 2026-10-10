@@ -27,6 +27,6 @@ Pruebas de rendimiento completas, revisión de seguridad, accesibilidad, deploy.
 ## Backlog posterior
 Desafíos pasados, rachas, compartir, ranking, pistas.
 
-## Hito 8 — Mejoras de juego [EN CURSO desde 2026-10-10]
+## Hito 8 — Mejoras de juego [HECHO 2026-10-10, pendiente de tu prueba]
 Orden de listas por relevancia (HU-14), dificultad de los desafíos (HU-11), rendirse (HU-12), racha y estadísticas (HU-13) y desafíos pasados (HU-15). Cada una con tests primero.
 

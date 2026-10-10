@@ -3,7 +3,7 @@
 Corrida del 2026-10-09 (interfaz verificada además a mano en el navegador: escritorio, celular, español e inglés, victoria, derrota y recarga) sobre el Postgres de Docker con los datos reales cargados. Entorno: Windows 11, Node 24, todo en la misma máquina (sin latencia de red), Next.js en modo producción (`next start`).
 
 ## Tests automáticos
-**186 tests, 17 archivos, todos en verde** (`npm test`).
+**271 tests, 22 archivos, todos en verde** (`npm test`).
 
 | Área | Archivos | Qué cubre |
 |---|---|---|
@@ -12,7 +12,7 @@ Corrida del 2026-10-09 (interfaz verificada además a mano en el navegador: escr
 | Cliente | `tests/lib/*`, `tests/i18n/*` | normalización de pasos, almacenamiento local de la partida, formatos, colores de camiseta, paridad de textos es/en y claves usadas |
 | Seguridad | `tests/security/*`, `tests/server/*` | RLS y permisos en la base, entradas maliciosas, rate limiting, cross-site, no filtrar la solución, secretos, rutas existentes, cabeceras |
 
-Cobertura de `src/domain`: 100 % de líneas, 96,6 % de ramas (mínimo exigido: 90 %).
+Cobertura de `src/domain`: ver `npm run test:coverage` (mínimo exigido: 90 %).
 
 Los tests de base de datos se omiten solos si no hay `TEST_DATABASE_URL*` (por ejemplo, sin Docker levantado). En CI corren contra un Postgres efímero.
 
