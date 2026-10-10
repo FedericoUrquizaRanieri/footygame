@@ -3,7 +3,7 @@ import { GET as clubSeasonStep } from "@/app/api/nodes/club-season/[id]/route";
 import { GET as playerStep } from "@/app/api/nodes/player/[id]/route";
 import { closePool } from "@/server/db";
 import { hasDb, request } from "../helpers/db";
-import { MESSI, PSG_2021 } from "../fixtures/mini-graph";
+import { BARCA_2020, MESSI, PSG_2021 } from "../fixtures/mini-graph";
 
 const player = (id: string) =>
   playerStep(request(`/api/nodes/player/${id}`), { params: Promise.resolve({ id }) });
@@ -13,7 +13,7 @@ const clubSeason = (id: string) =>
 afterAll(closePool);
 
 describe.skipIf(!hasDb)("GET /api/nodes (integración)", () => {
-  it("jugador: devuelve sus club-temporadas en orden cronológico", async () => {
+  it("jugador: devuelve sus club-temporadas, las más recientes primero", async () => {
     const res = await player(String(MESSI));
     expect(res.status).toBe(200);
     const body = await res.json();
@@ -23,13 +23,13 @@ describe.skipIf(!hasDb)("GET /api/nodes (integración)", () => {
         (i: { clubName: string; seasonLabel: string }) => `${i.clubName} ${i.seasonLabel}`,
       ),
     ).toEqual([
-      "FC Barcelona 2020/21",
-      "Paris Saint-Germain 2021/22",
       "Paris Saint-Germain 2022/23",
+      "Paris Saint-Germain 2021/22",
+      "FC Barcelona 2020/21",
     ]);
   });
 
-  it("club-temporada: devuelve los jugadores del plantel ordenados sin importar acentos", async () => {
+  it("club-temporada: devuelve el plantel con los más conocidos primero", async () => {
     const res = await clubSeason(String(PSG_2021));
     expect(res.status).toBe(200);
     const body = await res.json();
@@ -38,12 +38,20 @@ describe.skipIf(!hasDb)("GET /api/nodes (integración)", () => {
       clubName: "Paris Saint-Germain",
       seasonLabel: "2021/22",
     });
+    // Mbappé (200 M), Messi (180 M), Neymar (90 M), Di María (65 M)
     expect(body.items.map((p: { name: string }) => p.name)).toEqual([
-      "Ángel Di María",
       "Kylian Mbappé",
       "Lionel Messi",
       "Neymar",
+      "Ángel Di María",
     ]);
+  });
+
+  it("a igual valor de mercado, ordena por nombre; sin valor, al final", async () => {
+    const res = await clubSeason(String(BARCA_2020));
+    const names = (await res.json()).items.map((p: { name: string }) => p.name);
+    // Messi 180 M, Pedri 100 M, Neymar 90 M
+    expect(names).toEqual(["Lionel Messi", "Pedri", "Neymar"]);
   });
 
   it("solo devuelve el siguiente paso: campos mínimos, sin datos internos", async () => {

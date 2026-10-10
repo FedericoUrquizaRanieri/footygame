@@ -63,7 +63,7 @@ export interface PlayerStep {
   items: ClubSeasonItem[];
 }
 
-/** Siguiente paso desde un jugador: sus club-temporadas, en orden cronológico. */
+/** Siguiente paso desde un jugador: sus club-temporadas, las más recientes primero. */
 export async function getPlayerStep(playerId: number): Promise<PlayerStep | null> {
   const pool = getPool();
   const [player, items] = await Promise.all([
@@ -74,7 +74,7 @@ export async function getPlayerStep(playerId: number): Promise<PlayerStep | null
          join club_seasons cs on cs.id = e.club_season_id
          join clubs c on c.id = cs.club_id
         where e.player_id = $1
-        order by cs.season_year, c.name`,
+        order by cs.season_year desc, c.name`,
       [playerId],
     ),
   ]);
@@ -90,7 +90,7 @@ export interface ClubSeasonStep {
   items: PlayerSummary[];
 }
 
-/** Siguiente paso desde un club-temporada: los jugadores de ese plantel, ordenados por nombre. */
+/** Siguiente paso desde un club-temporada: el plantel, con los más conocidos primero. */
 export async function getClubSeasonStep(clubSeasonId: number): Promise<ClubSeasonStep | null> {
   const pool = getPool();
   const [cs, items] = await Promise.all([
@@ -103,7 +103,7 @@ export async function getClubSeasonStep(clubSeasonId: number): Promise<ClubSeaso
       `select p.id, p.name
          from player_club_seasons e join players p on p.id = e.player_id
         where e.club_season_id = $1
-        order by p.name_search`,
+        order by p.market_value_eur desc nulls last, p.name_search`,
       [clubSeasonId],
     ),
   ]);

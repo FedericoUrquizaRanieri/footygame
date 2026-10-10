@@ -23,6 +23,18 @@ import {
   miniGraph,
 } from "./mini-graph";
 
+/** Valor de mercado de prueba (€): define el orden "más conocidos primero". */
+export const marketValues: Record<number, number | null> = {
+  [MESSI]: 180_000_000,
+  [MBAPPE]: 200_000_000,
+  [NEYMAR]: 90_000_000,
+  [DI_MARIA]: 65_000_000,
+  [COPETTI]: 6_000_000,
+  [VLAHOVIC]: 60_000_000,
+  [RONALDO]: 100_000_000,
+  [PEDRI]: 100_000_000,
+};
+
 export const playerNames: Record<number, string> = {
   [MESSI]: "Lionel Messi",
   [DI_MARIA]: "Ángel Di María",
@@ -69,11 +81,10 @@ export async function seedTestDb(adminUrl: string): Promise<void> {
   try {
     await client.query("begin");
     for (const [id, name] of Object.entries(playerNames)) {
-      await client.query("insert into players (id, name, name_search) values ($1, $2, $3)", [
-        id,
-        name,
-        normalizeText(name),
-      ]);
+      await client.query(
+        "insert into players (id, name, name_search, market_value_eur) values ($1, $2, $3, $4)",
+        [id, name, normalizeText(name), marketValues[Number(id)] ?? null],
+      );
     }
     for (const c of clubs) {
       await client.query("insert into clubs (id, name, country, league) values ($1, $2, $3, $4)", [
