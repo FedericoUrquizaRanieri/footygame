@@ -21,6 +21,7 @@ import { challengeDateFor } from "@/domain/daily-date";
 import { computeStats } from "@/domain/stats";
 import { useNow } from "@/lib/use-now";
 import { Clock } from "./Clock";
+import { DestinationDialog } from "./DestinationDialog";
 import { GiveUpDialog } from "./GiveUpDialog";
 import { NodeHeader } from "./NodeHeader";
 import { PathChain, type ChainNode } from "./PathChain";
@@ -64,6 +65,7 @@ export function PlayScreen({ mode = "daily", date }: PlayScreenProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [pathOpen, setPathOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [destinationOpen, setDestinationOpen] = useState(false);
   const [streak, setStreak] = useState(0);
   const [step, setStep] = useState<StepState>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
@@ -258,6 +260,16 @@ export function PlayScreen({ mode = "daily", date }: PlayScreenProps) {
           <div id="path-drawer" className={`container ${s.drawer}`}>
             <PathChain nodes={path} label={t("play.path")} />
             <p className={s.sideNote}>{t("play.backHint")}</p>
+            <button
+              type="button"
+              className={`btn btn-ghost ${s.giveUpBtn}`}
+              onClick={() => {
+                setPathOpen(false);
+                setDestinationOpen(true);
+              }}
+            >
+              {t("play.viewClubsShort")}
+            </button>
             {playing && (
               <button
                 type="button"
@@ -311,8 +323,15 @@ export function PlayScreen({ mode = "daily", date }: PlayScreenProps) {
           destination={destination}
           path={path}
           onGiveUp={playing ? () => setConfirmOpen(true) : undefined}
+          onDestinationClick={() => setDestinationOpen(true)}
         />
       </div>
+
+      <DestinationDialog
+        open={destinationOpen}
+        destination={destination}
+        onClose={() => setDestinationOpen(false)}
+      />
 
       <GiveUpDialog
         open={confirmOpen && playing}

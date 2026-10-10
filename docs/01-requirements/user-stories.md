@@ -73,3 +73,7 @@ Como jugador quiero que recargar no me haga perder el progreso.
 ## HU-15 Jugar desafíos pasados
 - Puedo ver la lista de desafíos anteriores con su nivel y mi resultado si ya lo jugué.
 - Puedo jugar uno que no jugué, con las mismas reglas, y ver su resumen.
+
+## HU-16 Ver los clubes del jugador destino
+- Mientras juego, si toco al jugador destino (barra lateral en escritorio; panel del camino en celular), veo los clubes donde jugó, agrupados y con sus temporadas.
+- Es una pista para planear el camino: no cuesta saltos ni tiempo extra.

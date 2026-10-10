@@ -890,3 +890,52 @@
     gap: 1rem;
   }
 }
+
+/* =====================================================================
+   Clubes del jugador destino
+   ===================================================================== */
+.stickerBtn {
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r);
+  background: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 120ms ease;
+}
+
+.stickerBtn:hover {
+  transform: translateY(-2px);
+}
+
+.stickerBtn:active {
+  transform: translateY(0);
+}
+
+.clubList {
+  display: grid;
+  gap: 0.8rem;
+  max-height: 50dvh;
+  overflow: auto;
+}
+
+.clubRow {
+  display: grid;
+  grid-template-columns: 2.2rem 1fr;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.clubName {
+  display: block;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.clubSeasons {
+  display: block;
+  color: var(--ink-dim);
+  font-size: 0.95rem;
+}

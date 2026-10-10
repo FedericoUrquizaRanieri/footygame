@@ -76,7 +76,11 @@
     "giveUpTitle": "¿Te rendís?",
     "giveUpText": "La partida termina como derrota, vas a ver el camino más corto y se corta tu racha de hoy.",
     "giveUpConfirm": "Sí, rendirme",
-    "giveUpCancel": "Seguir jugando"
+    "giveUpCancel": "Seguir jugando",
+    "destinationClubs": "Clubes de {name}",
+    "viewClubs": "Ver los clubes de {name}",
+    "tapForClubs": "Tocá al jugador para ver sus clubes.",
+    "viewClubsShort": "Ver sus clubes"
   },
   "result": {
     "winTitle": "¡Llegaste!",

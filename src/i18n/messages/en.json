@@ -76,7 +76,11 @@
     "giveUpTitle": "Give up?",
     "giveUpText": "The game ends as a loss, you will see the shortest path and today's streak is broken.",
     "giveUpConfirm": "Yes, give up",
-    "giveUpCancel": "Keep playing"
+    "giveUpCancel": "Keep playing",
+    "destinationClubs": "Clubs of {name}",
+    "viewClubs": "See the clubs of {name}",
+    "tapForClubs": "Tap the player to see their clubs.",
+    "viewClubsShort": "See their clubs"
   },
   "result": {
     "winTitle": "You made it!",
