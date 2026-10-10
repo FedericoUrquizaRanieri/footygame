@@ -1,0 +1,27 @@
+# Postgres local SOLO para footygame, aislado de cualquier otra instalación (puerto 5433, solo localhost).
+# Se maneja con: npm run db:up | db:down | db:destroy   (ver scripts/db/init-local.ts)
+name: footygame
+
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: footygame-db
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5433:5432"
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_SUPERUSER_PASSWORD:?ejecutá npm run db:up}
+      FOOTYGAME_ADMIN_PASSWORD: ${FOOTYGAME_ADMIN_PASSWORD:?ejecutá npm run db:up}
+      FOOTYGAME_APP_PASSWORD: ${FOOTYGAME_APP_PASSWORD:?ejecutá npm run db:up}
+    volumes:
+      - footygame_pgdata:/var/lib/postgresql/data
+      - ./scripts/db/setup.sql:/setup/setup.sql:ro
+      - ./docker/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  footygame_pgdata:
