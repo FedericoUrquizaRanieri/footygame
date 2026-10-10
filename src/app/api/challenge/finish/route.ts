@@ -23,6 +23,8 @@ const bodySchema = z.object({
     .finite()
     .min(0)
     .max(2 * 86_400_000),
+  /** La persona se rindió: se acepta un camino que no llegó al destino. */
+  gaveUp: z.boolean().optional(),
 });
 
 const MAX_BODY_BYTES = 8_000;
@@ -55,7 +57,9 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   const graph = await getPathGraph(path);
-  const verdict = validatePath(graph, found.challenge, path, elapsedMs);
+  const verdict = validatePath(graph, found.challenge, path, elapsedMs, {
+    gaveUp: body.data.gaveUp,
+  });
   if (!verdict.valid) return json({ valid: false, reason: verdict.reason }, 422);
 
   const comparison = compareToOptimal(verdict.jumps, found.optimalLength);
@@ -71,5 +75,7 @@ export async function POST(request: Request): Promise<Response> {
     },
     extraJumps: comparison.extraJumps,
     isOptimal: comparison.isOptimal,
+    difficulty: found.difficulty,
+    ...(verdict.gaveUp ? { gaveUp: true } : {}),
   });
 }

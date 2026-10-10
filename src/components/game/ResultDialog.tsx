@@ -9,6 +9,7 @@ import type { FinishResult } from "@/lib/api-client";
 import { formatClock } from "@/lib/format";
 import { nodeKey } from "@/lib/steps";
 import { Countdown } from "./Countdown";
+import { LevelBadge } from "./LevelBadge";
 import { PathChain, type ChainNode } from "./PathChain";
 import s from "./game.module.css";
 
@@ -17,6 +18,10 @@ interface ResultDialogProps {
   game: GameState;
   labels: Record<string, string>;
   result: FinishResult | null;
+  /** Racha actual del desafío diario, para mostrarla al ganar. */
+  streak?: number;
+  /** "archive": desafío pasado (sin racha ni cuenta regresiva, y el botón principal lleva a la lista). */
+  variant?: "daily" | "archive";
   validation: "idle" | "pending" | "error";
   originName: string;
   destinationName: string;
@@ -30,6 +35,8 @@ export function ResultDialog({
   game,
   labels,
   result,
+  streak = 0,
+  variant = "daily",
   validation,
   originName,
   destinationName,
@@ -78,12 +85,18 @@ export function ResultDialog({
     >
       <div className={won ? s.dialogHead : `${s.dialogHead} ${s.lost}`}>
         <h2 id="result-title" className={s.dialogTitle} ref={titleRef} tabIndex={-1}>
-          {won ? t("result.winTitle") : t("result.loseTitle")}
+          {won
+            ? t("result.winTitle")
+            : game.gaveUp
+              ? t("result.gaveUpTitle")
+              : t("result.loseTitle")}
         </h2>
         <p className={s.dialogLead}>
           {won
             ? t("result.winLead", { from: originName, to: destinationName })
-            : t("result.loseLead", { to: destinationName })}
+            : game.gaveUp
+              ? t("result.gaveUpLead", { to: destinationName })
+              : t("result.loseLead", { to: destinationName })}
         </p>
       </div>
 
@@ -98,6 +111,15 @@ export function ResultDialog({
             <span className={s.statValue}>{jumps}</span>
           </div>
         </div>
+
+        {result && <LevelBadge difficulty={result.difficulty} />}
+        {variant === "daily" && won && streak > 0 && (
+          <p className={s.streakLine}>
+            {t("result.streak", {
+              days: t(streak === 1 ? "stats.day" : "stats.days", { n: streak }),
+            })}
+          </p>
+        )}
 
         {validation === "pending" && <p className={s.statusLine}>{t("result.validating")}</p>}
         {validation === "error" && (
@@ -133,13 +155,18 @@ export function ResultDialog({
           )}
         </div>
 
-        <p className={s.statusLine}>
-          {t("result.nextIn", { time: "" }).trim()} <Countdown />
-        </p>
+        {variant === "daily" && (
+          <p className={s.statusLine}>
+            {t("result.nextIn", { time: "" }).trim()} <Countdown />
+          </p>
+        )}
 
         <div className={s.dialogActions}>
-          <Link className="btn btn-primary" href={`/${locale}`}>
-            {t("result.home")}
+          <Link
+            className="btn btn-primary"
+            href={variant === "archive" ? `/${locale}/archive` : `/${locale}`}
+          >
+            {variant === "archive" ? t("archive.backToList") : t("result.home")}
           </Link>
           <button type="button" className="btn btn-ghost" onClick={onClose}>
             {t("result.close")}

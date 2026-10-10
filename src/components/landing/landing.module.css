@@ -51,7 +51,21 @@
 }
 
 .cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
   margin-top: 1.75rem;
+}
+
+/* En celular los botones se apilan al mismo ancho; desde 560 px quedan en fila. */
+.cta :global(.btn) {
+  width: 100%;
+}
+
+@media (min-width: 560px) {
+  .cta :global(.btn) {
+    width: auto;
+  }
 }
 
 /* ---------- Ruta de pases (el momento animado de la página) ---------- */

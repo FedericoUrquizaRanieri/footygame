@@ -39,10 +39,25 @@ describe.skipIf(!hasDb)("GET /api/challenge/today (integración)", () => {
     const res = await today(request("/api/challenge/today"));
     expect(res.status).toBe(200);
     const body = await res.json();
-    expect(Object.keys(body).sort()).toEqual(["date", "destination", "id", "origin"]);
+    expect(Object.keys(body).sort()).toEqual(["date", "destination", "difficulty", "id", "origin"]);
     expect(body.date).toBe(testDates().today);
     expect(body.origin).toEqual({ id: MESSI, name: "Lionel Messi" });
     expect(body.destination).toEqual({ id: COPETTI, name: "Enzo Copetti" });
+  });
+
+  it("informa el nivel de dificultad", async () => {
+    const body = await (await today(request("/api/challenge/today"))).json();
+    expect(body.difficulty).toBe("easy");
+  });
+
+  it("la base solo acepta niveles válidos", async () => {
+    await withClient("TEST_DATABASE_URL_ADMIN", async (c) => {
+      await expect(
+        c.query(
+          "update challenges set difficulty = 'imposible' where id = (select min(id) from challenges)",
+        ),
+      ).rejects.toMatchObject({ code: "23514" });
+    });
   });
 
   it("no filtra la solución", async () => {
@@ -67,6 +82,7 @@ describe.skipIf(!hasDb)("POST /api/challenge/finish (integración)", () => {
       jumps: 4,
       extraJumps: 0,
       isOptimal: true,
+      difficulty: "easy",
     });
     expect(body.optimal.length).toBe(4);
     expect(body.optimal.path.map((n: { label: string }) => n.label)).toEqual([
@@ -99,6 +115,75 @@ describe.skipIf(!hasDb)("POST /api/challenge/finish (integración)", () => {
     const id = await challengeId(testDates().today);
     const res = await post({ challengeId: id, path: winPath.slice(0, 3), elapsedMs: 60_000 });
     expect((await res.json()).reason).toBe("INCOMPLETE");
+  });
+
+  describe("rendirse (gaveUp)", () => {
+    it("un camino incompleto con gaveUp es una derrota válida y muestra el camino más corto", async () => {
+      const id = await challengeId(testDates().today);
+      const res = await post({
+        challengeId: id,
+        path: winPath.slice(0, 3),
+        elapsedMs: 60_000,
+        gaveUp: true,
+      });
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body).toMatchObject({ valid: true, result: "lost", jumps: 2, gaveUp: true });
+      expect(body.optimal.length).toBe(4);
+      expect(body.optimal.path).toHaveLength(5);
+    });
+
+    it("rendirse sin haber hecho saltos también es válido", async () => {
+      const id = await challengeId(testDates().today);
+      const res = await post({
+        challengeId: id,
+        path: [winPath[0]],
+        elapsedMs: 2_000,
+        gaveUp: true,
+      });
+      expect(res.status).toBe(200);
+      expect((await res.json()).jumps).toBe(0);
+    });
+
+    it("con gaveUp, un camino que llegó al destino se rechaza", async () => {
+      const id = await challengeId(testDates().today);
+      const res = await post({ challengeId: id, path: winPath, elapsedMs: 60_000, gaveUp: true });
+      expect(res.status).toBe(422);
+      const text = await res.text();
+      expect(JSON.parse(text).reason).toBe("INVALID_GIVE_UP");
+      expect(text).not.toMatch(/optimal/i);
+    });
+
+    it("gaveUp debe ser booleano", async () => {
+      const res = await post({
+        challengeId: 1,
+        path: winPath.slice(0, 3),
+        elapsedMs: 60_000,
+        gaveUp: "si",
+      });
+      expect(res.status).toBe(400);
+    });
+
+    it("sin gaveUp, un camino incompleto sigue rechazándose", async () => {
+      const id = await challengeId(testDates().today);
+      const res = await post({ challengeId: id, path: winPath.slice(0, 3), elapsedMs: 60_000 });
+      expect((await res.json()).reason).toBe("INCOMPLETE");
+    });
+  });
+
+  it("un desafío pasado se puede cerrar (práctica) y devuelve su resumen", async () => {
+    const id = await challengeId(testDates().yesterday);
+    // Neymar -> PSG 2021 -> Di María -> Rosario Central 2025 -> Copetti
+    const path = [
+      { type: "player", id: 4 },
+      { type: "club-season", id: PSG_2021 },
+      { type: "player", id: DI_MARIA },
+      { type: "club-season", id: ROSARIO_2025 },
+      { type: "player", id: COPETTI },
+    ];
+    const res = await post({ challengeId: id, path, elapsedMs: 4 * MIN_MS_PER_JUMP + 5000 });
+    expect(res.status).toBe(200);
+    expect(await res.json()).toMatchObject({ valid: true, result: "won", difficulty: "medium" });
   });
 
   it("un desafío futuro no existe todavía: 404 (no se puede espiar la solución)", async () => {

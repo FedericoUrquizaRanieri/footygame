@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   CHALLENGE_TIMEZONE,
   challengeDateFor,
+  isArchiveDate,
   secondsUntilNextChallengeDay,
 } from "@/domain/daily-date";
 
@@ -43,5 +44,33 @@ describe("secondsUntilNextChallengeDay", () => {
 
   it("al mediodía de Buenos Aires faltan 12 horas", () => {
     expect(secondsUntilNextChallengeDay(new Date("2026-10-08T15:00:00Z"))).toBe(43_200);
+  });
+});
+
+describe("isArchiveDate", () => {
+  const today = "2026-10-09";
+
+  it("acepta fechas anteriores a hoy", () => {
+    expect(isArchiveDate("2026-10-08", today)).toBe(true);
+    expect(isArchiveDate("2025-01-01", today)).toBe(true);
+  });
+
+  it("rechaza hoy y el futuro", () => {
+    expect(isArchiveDate("2026-10-09", today)).toBe(false);
+    expect(isArchiveDate("2026-10-10", today)).toBe(false);
+  });
+
+  it("rechaza formatos inválidos y fechas imposibles", () => {
+    for (const bad of [
+      "",
+      "hoy",
+      "09-10-2026",
+      "2026-1-5",
+      "2026-13-01",
+      "2026-02-30",
+      "2026-10-08x",
+    ]) {
+      expect(isArchiveDate(bad, today), bad).toBe(false);
+    }
   });
 });

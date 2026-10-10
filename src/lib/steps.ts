@@ -64,3 +64,20 @@ export function normalizeClubSeasonStep(data: ClubSeasonStepResponse): Step {
 
 /** Clave estable de un nodo, para mapas de etiquetas y caché. */
 export const nodeKey = (n: NodeRef): string => `${n.type === "player" ? "p" : "c"}:${n.id}`;
+
+export interface ClubGroup {
+  kitId: number;
+  name: string;
+  seasons: string[];
+}
+
+/** Junta las club-temporadas de un jugador por club, conservando el orden (las más recientes primero). */
+export function groupByClub(step: Step): ClubGroup[] {
+  const groups = new Map<number, ClubGroup>();
+  for (const item of step.items) {
+    const group = groups.get(item.kitId) ?? { kitId: item.kitId, name: item.label, seasons: [] };
+    if (item.sublabel) group.seasons.push(item.sublabel);
+    groups.set(item.kitId, group);
+  }
+  return [...groups.values()];
+}

@@ -71,7 +71,16 @@
     "lastJumpWarning": "This is your last jump",
     "backHint": "Going back counts as a jump.",
     "pickPlayer": "Pick a teammate",
-    "pickClub": "Pick a club and a season"
+    "pickClub": "Pick a club and a season",
+    "giveUp": "Give up",
+    "giveUpTitle": "Give up?",
+    "giveUpText": "The game ends as a loss, you will see the shortest path and today's streak is broken.",
+    "giveUpConfirm": "Yes, give up",
+    "giveUpCancel": "Keep playing",
+    "destinationClubs": "Clubs of {name}",
+    "viewClubs": "See the clubs of {name}",
+    "tapForClubs": "Tap the player to see their clubs.",
+    "viewClubsShort": "See their clubs"
   },
   "result": {
     "winTitle": "You made it!",
@@ -93,11 +102,48 @@
     "close": "Close",
     "home": "Back to home",
     "summary": "See summary",
-    "nextIn": "The next challenge arrives in {time}"
+    "nextIn": "The next challenge arrives in {time}",
+    "gaveUpTitle": "You gave up",
+    "gaveUpLead": "This is how to reach {to}.",
+    "streak": "Streak: {days} in a row"
+  },
+  "difficulty": {
+    "label": "Difficulty",
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard"
   },
   "common": {
     "loading": "Loading",
     "player": "Player",
     "clubSeason": "Club and season"
+  },
+  "stats": {
+    "title": "Your numbers",
+    "streak": "Current streak",
+    "bestStreak": "Best streak",
+    "bestTime": "Best time",
+    "avgJumps": "Average jumps",
+    "record": "You won {won} of {played}",
+    "optimal": "{n} with the shortest path",
+    "day": "{n} day",
+    "days": "{n} days",
+    "none": "No data"
+  },
+  "archive": {
+    "link": "Past challenges",
+    "title": "Past challenges",
+    "note": "Play the days you missed. It is practice: it doesn't count for your streak or your numbers.",
+    "empty": "There are no past challenges yet.",
+    "emptyHint": "Once the first day goes by, you will find it here.",
+    "route": "From {from} to {to}",
+    "statusWon": "Won",
+    "statusLost": "Lost",
+    "statusPlaying": "In progress",
+    "statusNew": "Play",
+    "briefTitle": "Challenge of {date}",
+    "doneTitle": "You already played this challenge",
+    "practiceNote": "This is practice: it doesn't count for your streak.",
+    "backToList": "More challenges"
   }
 }

@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { clubIdOf, nodeKey, normalizeClubSeasonStep, normalizePlayerStep } from "@/lib/steps";
+import {
+  clubIdOf,
+  groupByClub,
+  nodeKey,
+  normalizeClubSeasonStep,
+  normalizePlayerStep,
+} from "@/lib/steps";
 
 describe("normalizePlayerStep", () => {
   const step = normalizePlayerStep({
@@ -59,5 +65,31 @@ describe("utilidades", () => {
 
   it("nodeKey distingue jugadores de club-temporadas con el mismo id", () => {
     expect(nodeKey({ type: "player", id: 7 })).not.toBe(nodeKey({ type: "club-season", id: 7 }));
+  });
+});
+
+describe("groupByClub", () => {
+  const step = normalizePlayerStep({
+    player: { id: 1, name: "Jugador" },
+    items: [
+      { id: 5832023, clubName: "PSG", seasonLabel: "2023/24" },
+      { id: 1312020, clubName: "Barcelona", seasonLabel: "2020/21" },
+      { id: 5832022, clubName: "PSG", seasonLabel: "2022/23" },
+    ],
+  });
+
+  it("junta las temporadas de un mismo club", () => {
+    expect(groupByClub(step)).toEqual([
+      { kitId: 583, name: "PSG", seasons: ["2023/24", "2022/23"] },
+      { kitId: 131, name: "Barcelona", seasons: ["2020/21"] },
+    ]);
+  });
+
+  it("conserva el orden de aparición de los clubes", () => {
+    expect(groupByClub(step).map((g) => g.name)).toEqual(["PSG", "Barcelona"]);
+  });
+
+  it("un jugador sin clubes devuelve una lista vacía", () => {
+    expect(groupByClub({ ...step, items: [] })).toEqual([]);
   });
 });

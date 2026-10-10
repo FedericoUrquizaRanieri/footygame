@@ -30,6 +30,9 @@ export default async function LandingPage({ params }: PageProps<"/[locale]">) {
                 <Link className="btn btn-primary" href={`/${locale}/daily`}>
                   {t("landing.cta")}
                 </Link>
+                <Link className="btn btn-ghost" href={`/${locale}/archive`}>
+                  {t("archive.link")}
+                </Link>
               </div>
             </div>
             <Suspense fallback={null}>

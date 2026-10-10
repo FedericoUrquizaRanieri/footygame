@@ -23,6 +23,18 @@ import {
   miniGraph,
 } from "./mini-graph";
 
+/** Valor de mercado de prueba (€): define el orden "más conocidos primero". */
+export const marketValues: Record<number, number | null> = {
+  [MESSI]: 180_000_000,
+  [MBAPPE]: 200_000_000,
+  [NEYMAR]: 90_000_000,
+  [DI_MARIA]: 65_000_000,
+  [COPETTI]: 6_000_000,
+  [VLAHOVIC]: 60_000_000,
+  [RONALDO]: 100_000_000,
+  [PEDRI]: 100_000_000,
+};
+
 export const playerNames: Record<number, string> = {
   [MESSI]: "Lionel Messi",
   [DI_MARIA]: "Ángel Di María",
@@ -60,6 +72,8 @@ export function testDates(now = Date.now()) {
   return {
     today: challengeDateFor(now),
     tomorrow: challengeDateFor(now + 86_400_000),
+    yesterday: challengeDateFor(now - 86_400_000),
+    twoDaysAgo: challengeDateFor(now - 2 * 86_400_000),
   };
 }
 
@@ -69,11 +83,10 @@ export async function seedTestDb(adminUrl: string): Promise<void> {
   try {
     await client.query("begin");
     for (const [id, name] of Object.entries(playerNames)) {
-      await client.query("insert into players (id, name, name_search) values ($1, $2, $3)", [
-        id,
-        name,
-        normalizeText(name),
-      ]);
+      await client.query(
+        "insert into players (id, name, name_search, market_value_eur) values ($1, $2, $3, $4)",
+        [id, name, normalizeText(name), marketValues[Number(id)] ?? null],
+      );
     }
     for (const c of clubs) {
       await client.query("insert into clubs (id, name, country, league) values ($1, $2, $3, $4)", [
@@ -100,8 +113,9 @@ export async function seedTestDb(adminUrl: string): Promise<void> {
     const todays = analyzeChallenge(miniGraph, MESSI, COPETTI)!;
     const futures = analyzeChallenge(miniGraph, PEDRI, COPETTI)!;
     const insert = `insert into challenges
-      (date, origin_player_id, destination_player_id, optimal_length, optimal_paths_count, optimal_path)
-      values ($1::date, $2, $3, $4, $5, $6::jsonb)`;
+      (date, origin_player_id, destination_player_id, optimal_length, optimal_paths_count, optimal_path,
+       difficulty, difficulty_score)
+      values ($1::date, $2, $3, $4, $5, $6::jsonb, $7, $8)`;
     await client.query(insert, [
       today,
       MESSI,
@@ -109,6 +123,8 @@ export async function seedTestDb(adminUrl: string): Promise<void> {
       todays.optimalLength,
       todays.optimalPathsCount,
       JSON.stringify(todays.optimalPath),
+      "easy",
+      -2,
     ]);
     await client.query(insert, [
       tomorrow,
@@ -117,7 +133,26 @@ export async function seedTestDb(adminUrl: string): Promise<void> {
       futures.optimalLength,
       futures.optimalPathsCount,
       JSON.stringify(futures.optimalPath),
+      "hard",
+      4,
     ]);
+    const { yesterday, twoDaysAgo } = testDates();
+    for (const [date, from, level, score] of [
+      [yesterday, NEYMAR, "medium", 1],
+      [twoDaysAgo, MBAPPE, "hard", 3],
+    ] as const) {
+      const analysis = analyzeChallenge(miniGraph, from, COPETTI)!;
+      await client.query(insert, [
+        date,
+        from,
+        COPETTI,
+        analysis.optimalLength,
+        analysis.optimalPathsCount,
+        JSON.stringify(analysis.optimalPath),
+        level,
+        score,
+      ]);
+    }
     await client.query("commit");
   } catch (error) {
     await client.query("rollback");

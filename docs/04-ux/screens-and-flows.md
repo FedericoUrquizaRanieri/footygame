@@ -43,3 +43,12 @@ Mínimas, temáticas.
 
 ## Pendiente
 Referenciar visualmente filmlink.io/daily para extraer decisiones de interfaz [ABIERTO: revisión del sitio].
+
+## Mejoras de juego (v1.1)
+- **Nivel de dificultad** visible en la pantalla previa y en el resumen (tres barras y el nombre del nivel).
+- **Rendirme**: botón en la barra lateral (escritorio) y en el panel del camino (celular), con confirmación. Termina como derrota y muestra el camino más corto.
+- **Tus números** en la pantalla previa del diario: racha actual, mejor racha, mejor tiempo y saltos promedio. En el resumen, la racha al ganar.
+- **Desafíos anteriores** (`/[locale]/archive`): lista de hasta 60 días con tu resultado. Cada uno tiene su pantalla previa (`/archive/[date]`) y su juego (`/archive/[date]/play`), con las mismas reglas pero como práctica: no cuenta para la racha ni para los números. El resumen vuelve a la lista y no muestra cuenta regresiva.
+- Las rutas de práctica solo sirven fechas anteriores a hoy; para hoy, el futuro o fechas inválidas muestran la página "no encontrada" (con `noindex`). Limitación menor: por el streaming de Next.js el código HTTP es 200 en esos casos.
+
+- **Clubes del destino**: tocar al jugador destino abre un diálogo con los clubes donde jugó (agrupados por club, con sus temporadas). En celular se llega desde el panel del camino ("Ver sus clubes"). Reutiliza la misma carga con caché que el resto del juego, sin ruta nueva.

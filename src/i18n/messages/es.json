@@ -71,7 +71,16 @@
     "lastJumpWarning": "Es tu último salto",
     "backHint": "Volver atrás cuenta como salto.",
     "pickPlayer": "Elegí un compañero",
-    "pickClub": "Elegí un club y una temporada"
+    "pickClub": "Elegí un club y una temporada",
+    "giveUp": "Rendirme",
+    "giveUpTitle": "¿Te rendís?",
+    "giveUpText": "La partida termina como derrota, vas a ver el camino más corto y se corta tu racha de hoy.",
+    "giveUpConfirm": "Sí, rendirme",
+    "giveUpCancel": "Seguir jugando",
+    "destinationClubs": "Clubes de {name}",
+    "viewClubs": "Ver los clubes de {name}",
+    "tapForClubs": "Tocá al jugador para ver sus clubes.",
+    "viewClubsShort": "Ver sus clubes"
   },
   "result": {
     "winTitle": "¡Llegaste!",
@@ -93,11 +102,48 @@
     "close": "Cerrar",
     "home": "Volver al inicio",
     "summary": "Ver resumen",
-    "nextIn": "El próximo desafío llega en {time}"
+    "nextIn": "El próximo desafío llega en {time}",
+    "gaveUpTitle": "Te rendiste",
+    "gaveUpLead": "Así se llegaba a {to}.",
+    "streak": "Racha: {days} seguidos"
+  },
+  "difficulty": {
+    "label": "Dificultad",
+    "easy": "Fácil",
+    "medium": "Media",
+    "hard": "Difícil"
   },
   "common": {
     "loading": "Cargando",
     "player": "Jugador",
     "clubSeason": "Club y temporada"
+  },
+  "stats": {
+    "title": "Tus números",
+    "streak": "Racha actual",
+    "bestStreak": "Mejor racha",
+    "bestTime": "Mejor tiempo",
+    "avgJumps": "Saltos promedio",
+    "record": "Ganaste {won} de {played}",
+    "optimal": "{n} por el camino más corto",
+    "day": "{n} día",
+    "days": "{n} días",
+    "none": "Sin datos"
+  },
+  "archive": {
+    "link": "Desafíos anteriores",
+    "title": "Desafíos anteriores",
+    "note": "Jugá los días que te perdiste. Es práctica: no cuenta para tu racha ni para tus números.",
+    "empty": "Todavía no hay desafíos anteriores.",
+    "emptyHint": "Cuando pase el primer día, vas a encontrarlo acá.",
+    "route": "De {from} a {to}",
+    "statusWon": "Ganado",
+    "statusLost": "Perdido",
+    "statusPlaying": "En curso",
+    "statusNew": "Jugar",
+    "briefTitle": "Desafío del {date}",
+    "doneTitle": "Ya jugaste este desafío",
+    "practiceNote": "Es práctica: no cuenta para tu racha.",
+    "backToList": "Ver más desafíos"
   }
 }
