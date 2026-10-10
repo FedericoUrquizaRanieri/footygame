@@ -30,7 +30,7 @@ UNIQUE(club_id, season_year). No hay tabla `seasons` aparte: el año y la etique
 `player_id`, `club_season_id`, `source` (origen del dato; hoy `lineups`). PK(player_id, club_season_id) cubre la dirección jugador→club-temporada; el índice `(club_season_id, player_id)` cubre la inversa. La existencia de la fila significa "integró el plantel" (titular, suplente en el banco o con aparición), sin importar los minutos.
 
 ### `challenges`
-`id`, `date` (UNIQUE, día de Buenos Aires), `origin_player_id`, `destination_player_id`, `optimal_length`, `optimal_paths_count`, `optimal_path` (jsonb). **Nunca se envía `optimal_*` al cliente antes de que el intento termine** (ver [security](security.md)).
+`id`, `date` (UNIQUE, día de Buenos Aires), `origin_player_id`, `destination_player_id`, `optimal_length`, `optimal_paths_count`, `optimal_path` (jsonb), `difficulty` (`easy`/`medium`/`hard`), `difficulty_score`. **Nunca se envía `optimal_*` al cliente antes de que el intento termine** (ver [security](security.md)).
 
 ## Consultas críticas
 1. Club-temporadas de un jugador: `player_club_seasons` JOIN `club_seasons` JOIN `clubs` WHERE player_id = ?

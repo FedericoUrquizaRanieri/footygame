@@ -19,6 +19,46 @@
   color: var(--chalk-dim);
 }
 
+.level {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 0.6rem;
+  margin-top: 0.6rem;
+  line-height: 1;
+}
+
+.meter {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.meter span {
+  width: 0.45rem;
+  border-radius: 2px;
+}
+
+.meter span:nth-child(1) {
+  height: 0.6rem;
+}
+
+.meter span:nth-child(2) {
+  height: 0.95rem;
+}
+
+.meter span:nth-child(3) {
+  height: 1.3rem;
+}
+
+.meterOn {
+  background: currentColor;
+}
+
+.meterOff {
+  background: currentColor;
+  opacity: 0.25;
+}
+
 .endCaption {
   font-size: 0.95rem;
   color: var(--chalk-dim);

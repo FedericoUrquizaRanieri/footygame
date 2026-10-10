@@ -95,6 +95,12 @@
     "summary": "See summary",
     "nextIn": "The next challenge arrives in {time}"
   },
+  "difficulty": {
+    "label": "Difficulty",
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard"
+  },
   "common": {
     "loading": "Loading",
     "player": "Player",

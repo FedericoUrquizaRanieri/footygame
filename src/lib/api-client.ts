@@ -1,3 +1,4 @@
+import type { Difficulty } from "@/domain/difficulty";
 import type { NodeRef } from "@/domain/types";
 import { nodeKey, normalizeClubSeasonStep, normalizePlayerStep, type Step } from "./steps";
 
@@ -37,6 +38,7 @@ export function prefetchStep(node: NodeRef): void {
 
 export interface FinishResult {
   valid: true;
+  difficulty: Difficulty;
   result: "won" | "lost";
   jumps: number;
   elapsedMs: number;

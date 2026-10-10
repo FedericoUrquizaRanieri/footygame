@@ -111,8 +111,9 @@ export async function seedTestDb(adminUrl: string): Promise<void> {
     const todays = analyzeChallenge(miniGraph, MESSI, COPETTI)!;
     const futures = analyzeChallenge(miniGraph, PEDRI, COPETTI)!;
     const insert = `insert into challenges
-      (date, origin_player_id, destination_player_id, optimal_length, optimal_paths_count, optimal_path)
-      values ($1::date, $2, $3, $4, $5, $6::jsonb)`;
+      (date, origin_player_id, destination_player_id, optimal_length, optimal_paths_count, optimal_path,
+       difficulty, difficulty_score)
+      values ($1::date, $2, $3, $4, $5, $6::jsonb, $7, $8)`;
     await client.query(insert, [
       today,
       MESSI,
@@ -120,6 +121,8 @@ export async function seedTestDb(adminUrl: string): Promise<void> {
       todays.optimalLength,
       todays.optimalPathsCount,
       JSON.stringify(todays.optimalPath),
+      "easy",
+      -2,
     ]);
     await client.query(insert, [
       tomorrow,
@@ -128,6 +131,8 @@ export async function seedTestDb(adminUrl: string): Promise<void> {
       futures.optimalLength,
       futures.optimalPathsCount,
       JSON.stringify(futures.optimalPath),
+      "hard",
+      4,
     ]);
     await client.query("commit");
   } catch (error) {

@@ -17,6 +17,7 @@ import {
 import { nodeKey } from "@/lib/steps";
 import type { TodaysChallenge } from "@/lib/challenge-types";
 import { Countdown } from "./Countdown";
+import { LevelBadge } from "./LevelBadge";
 import s from "./game.module.css";
 
 /** Pantalla previa: de dónde salís, a dónde llegás, y el botón Empezar (el reloj arranca ahí, no antes). */
@@ -75,6 +76,7 @@ export function BriefingScreen({ challenge }: { challenge: TodaysChallenge | nul
         <p className={s.briefDate}>
           {t("landing.challengeOf", { date: formatChallengeDate(challenge.date, locale) })}
         </p>
+        <LevelBadge difficulty={challenge.difficulty} />
       </div>
 
       <PassMap

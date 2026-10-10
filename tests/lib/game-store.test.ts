@@ -21,6 +21,7 @@ const NOW = Date.parse("2026-10-09T15:00:00Z"); // 12:00 en Buenos Aires
 const challenge = { id: 7, date: "2026-10-09", originId: 1, destinationId: 3 };
 const result: FinishResult = {
   valid: true,
+  difficulty: "easy",
   result: "won",
   jumps: 4,
   elapsedMs: 60_000,

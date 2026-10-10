@@ -71,5 +71,6 @@ export async function POST(request: Request): Promise<Response> {
     },
     extraJumps: comparison.extraJumps,
     isOptimal: comparison.isOptimal,
+    difficulty: found.difficulty,
   });
 }

@@ -39,10 +39,25 @@ describe.skipIf(!hasDb)("GET /api/challenge/today (integración)", () => {
     const res = await today(request("/api/challenge/today"));
     expect(res.status).toBe(200);
     const body = await res.json();
-    expect(Object.keys(body).sort()).toEqual(["date", "destination", "id", "origin"]);
+    expect(Object.keys(body).sort()).toEqual(["date", "destination", "difficulty", "id", "origin"]);
     expect(body.date).toBe(testDates().today);
     expect(body.origin).toEqual({ id: MESSI, name: "Lionel Messi" });
     expect(body.destination).toEqual({ id: COPETTI, name: "Enzo Copetti" });
+  });
+
+  it("informa el nivel de dificultad", async () => {
+    const body = await (await today(request("/api/challenge/today"))).json();
+    expect(body.difficulty).toBe("easy");
+  });
+
+  it("la base solo acepta niveles válidos", async () => {
+    await withClient("TEST_DATABASE_URL_ADMIN", async (c) => {
+      await expect(
+        c.query(
+          "update challenges set difficulty = 'imposible' where id = (select min(id) from challenges)",
+        ),
+      ).rejects.toMatchObject({ code: "23514" });
+    });
   });
 
   it("no filtra la solución", async () => {
@@ -67,6 +82,7 @@ describe.skipIf(!hasDb)("POST /api/challenge/finish (integración)", () => {
       jumps: 4,
       extraJumps: 0,
       isOptimal: true,
+      difficulty: "easy",
     });
     expect(body.optimal.length).toBe(4);
     expect(body.optimal.path.map((n: { label: string }) => n.label)).toEqual([

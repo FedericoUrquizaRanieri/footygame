@@ -1,3 +1,4 @@
+import type { Difficulty } from "@/domain/difficulty";
 import { Graph } from "@/domain/graph";
 import type { Challenge, NodeRef } from "@/domain/types";
 import type { PlayerSummary, TodaysChallenge } from "@/lib/challenge-types";
@@ -6,6 +7,7 @@ import { getPool } from "./db";
 /** Desafío completo, incluida la solución. SOLO para uso interno (endpoint finish). */
 export interface ChallengeWithSolution {
   challenge: Challenge;
+  difficulty: Difficulty;
   optimalLength: number;
   optimalPathsCount: number;
 }
@@ -14,7 +16,7 @@ const DATE_SQL = "to_char(c.date, 'YYYY-MM-DD')";
 
 export async function getChallengeForDate(date: string): Promise<TodaysChallenge | null> {
   const { rows } = await getPool().query(
-    `select c.id, ${DATE_SQL} as date, o.id as o_id, o.name as o_name, d.id as d_id, d.name as d_name
+    `select c.id, ${DATE_SQL} as date, c.difficulty, o.id as o_id, o.name as o_name, d.id as d_id, d.name as d_name
        from challenges c
        join players o on o.id = c.origin_player_id
        join players d on d.id = c.destination_player_id
@@ -28,13 +30,14 @@ export async function getChallengeForDate(date: string): Promise<TodaysChallenge
     date: r.date,
     origin: { id: r.o_id, name: r.o_name },
     destination: { id: r.d_id, name: r.d_name },
+    difficulty: r.difficulty,
   };
 }
 
 export async function getChallengeWithSolution(id: number): Promise<ChallengeWithSolution | null> {
   const { rows } = await getPool().query(
     `select c.id, ${DATE_SQL} as date, c.origin_player_id, c.destination_player_id,
-            c.optimal_length, c.optimal_paths_count
+            c.optimal_length, c.optimal_paths_count, c.difficulty
        from challenges c where c.id = $1`,
     [id],
   );
@@ -47,6 +50,7 @@ export async function getChallengeWithSolution(id: number): Promise<ChallengeWit
       originId: r.origin_player_id,
       destinationId: r.destination_player_id,
     },
+    difficulty: r.difficulty,
     optimalLength: r.optimal_length,
     optimalPathsCount: r.optimal_paths_count,
   };

@@ -95,6 +95,12 @@
     "summary": "Ver resumen",
     "nextIn": "El próximo desafío llega en {time}"
   },
+  "difficulty": {
+    "label": "Dificultad",
+    "easy": "Fácil",
+    "medium": "Media",
+    "hard": "Difícil"
+  },
   "common": {
     "loading": "Cargando",
     "player": "Jugador",

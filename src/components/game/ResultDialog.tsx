@@ -9,6 +9,7 @@ import type { FinishResult } from "@/lib/api-client";
 import { formatClock } from "@/lib/format";
 import { nodeKey } from "@/lib/steps";
 import { Countdown } from "./Countdown";
+import { LevelBadge } from "./LevelBadge";
 import { PathChain, type ChainNode } from "./PathChain";
 import s from "./game.module.css";
 
@@ -98,6 +99,8 @@ export function ResultDialog({
             <span className={s.statValue}>{jumps}</span>
           </div>
         </div>
+
+        {result && <LevelBadge difficulty={result.difficulty} />}
 
         {validation === "pending" && <p className={s.statusLine}>{t("result.validating")}</p>}
         {validation === "error" && (
