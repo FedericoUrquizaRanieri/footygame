@@ -25,6 +25,8 @@ next-env.d.ts
 # datos crudos del spike (se descargan con scripts/spike/download.py)
 /data/raw/*
 !/data/raw/.gitkeep
+# datos generados por scripts/pipeline/extract.py (se regeneran)
+/data/processed/
 *.duckdb
 *.duckdb.wal
 *.csv.gz
@@ -46,3 +48,4 @@ Thumbs.db
 npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
+

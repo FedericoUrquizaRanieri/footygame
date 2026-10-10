@@ -3,10 +3,13 @@ import path from "node:path";
 
 export default defineConfig({
   resolve: {
-    alias: { "@": path.resolve(__dirname, "src") },
+    alias: { "@": path.resolve(import.meta.dirname, "src") },
   },
   test: {
     environment: "node",
+    globalSetup: ["tests/setup/global-db.ts"],
+    setupFiles: ["tests/setup/env.ts"],
+    fileParallelism: false,
     include: ["src/**/*.test.ts", "tests/**/*.test.ts"],
     passWithNoTests: true,
     coverage: {
