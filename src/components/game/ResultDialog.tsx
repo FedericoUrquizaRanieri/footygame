@@ -79,12 +79,18 @@ export function ResultDialog({
     >
       <div className={won ? s.dialogHead : `${s.dialogHead} ${s.lost}`}>
         <h2 id="result-title" className={s.dialogTitle} ref={titleRef} tabIndex={-1}>
-          {won ? t("result.winTitle") : t("result.loseTitle")}
+          {won
+            ? t("result.winTitle")
+            : game.gaveUp
+              ? t("result.gaveUpTitle")
+              : t("result.loseTitle")}
         </h2>
         <p className={s.dialogLead}>
           {won
             ? t("result.winLead", { from: originName, to: destinationName })
-            : t("result.loseLead", { to: destinationName })}
+            : game.gaveUp
+              ? t("result.gaveUpLead", { to: destinationName })
+              : t("result.loseLead", { to: destinationName })}
         </p>
       </div>
 

@@ -71,7 +71,12 @@
     "lastJumpWarning": "Es tu último salto",
     "backHint": "Volver atrás cuenta como salto.",
     "pickPlayer": "Elegí un compañero",
-    "pickClub": "Elegí un club y una temporada"
+    "pickClub": "Elegí un club y una temporada",
+    "giveUp": "Rendirme",
+    "giveUpTitle": "¿Te rendís?",
+    "giveUpText": "La partida termina como derrota, vas a ver el camino más corto y se corta tu racha de hoy.",
+    "giveUpConfirm": "Sí, rendirme",
+    "giveUpCancel": "Seguir jugando"
   },
   "result": {
     "winTitle": "¡Llegaste!",
@@ -93,7 +98,9 @@
     "close": "Cerrar",
     "home": "Volver al inicio",
     "summary": "Ver resumen",
-    "nextIn": "El próximo desafío llega en {time}"
+    "nextIn": "El próximo desafío llega en {time}",
+    "gaveUpTitle": "Te rendiste",
+    "gaveUpLead": "Así se llegaba a {to}."
   },
   "difficulty": {
     "label": "Dificultad",

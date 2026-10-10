@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Monogram } from "@/components/ui/Monogram";
-import { currentNode, elapsedMs, jumpsOf, selectNode, type GameState } from "@/domain/game";
+import { currentNode, elapsedMs, giveUp, jumpsOf, selectNode, type GameState } from "@/domain/game";
 import { MAX_JUMPS } from "@/domain/types";
 import { useI18n } from "@/i18n/provider";
 import { fetchStep, finishChallenge, type FinishResult } from "@/lib/api-client";
@@ -11,6 +11,7 @@ import { nodeKey, type Step, type StepItem } from "@/lib/steps";
 import { readTodaySession, writeGame, writeLabels, writeResult } from "@/lib/game-store";
 import { useNow } from "@/lib/use-now";
 import { Clock } from "./Clock";
+import { GiveUpDialog } from "./GiveUpDialog";
 import { NodeHeader } from "./NodeHeader";
 import { PathChain, type ChainNode } from "./PathChain";
 import { ResultDialog } from "./ResultDialog";
@@ -37,6 +38,7 @@ export function PlayScreen() {
   const [validation, setValidation] = useState<Validation>("idle");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [pathOpen, setPathOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const [step, setStep] = useState<StepState>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
 
@@ -55,6 +57,7 @@ export function PlayScreen() {
         challengeId: g.challenge.id,
         path: g.path,
         elapsedMs: (g.finishedAt ?? Date.now()) - (g.startedAt ?? Date.now()),
+        gaveUp: g.gaveUp,
       });
       writeResult(response);
       setResult(response);
@@ -137,6 +140,25 @@ export function PlayScreen() {
     [runFinish],
   );
 
+  const onGiveUp = useCallback(() => {
+    const current = gameRef.current;
+    if (!current || current.status !== "playing") return;
+    let next: GameState;
+    try {
+      next = giveUp(current, Date.now());
+    } catch {
+      return;
+    }
+    gameRef.current = next;
+    writeGame(next);
+    setGame(next);
+    setConfirmOpen(false);
+    setPathOpen(false);
+    window.scrollTo({ top: 0 });
+    setDialogOpen(true);
+    void runFinish(next);
+  }, [runFinish]);
+
   if (!ready || !game || !node) {
     return (
       <div className={`container ${s.main}`} aria-busy="true">
@@ -197,6 +219,15 @@ export function PlayScreen() {
           <div id="path-drawer" className={`container ${s.drawer}`}>
             <PathChain nodes={path} label={t("play.path")} />
             <p className={s.sideNote}>{t("play.backHint")}</p>
+            {playing && (
+              <button
+                type="button"
+                className={`btn btn-ghost ${s.giveUpBtn}`}
+                onClick={() => setConfirmOpen(true)}
+              >
+                {t("play.giveUp")}
+              </button>
+            )}
           </div>
         )}
       </div>
@@ -234,8 +265,21 @@ export function PlayScreen() {
           )}
         </main>
 
-        <Scoreboard t={t} elapsedMs={elapsed} jumps={jumps} destination={destination} path={path} />
+        <Scoreboard
+          t={t}
+          elapsedMs={elapsed}
+          jumps={jumps}
+          destination={destination}
+          path={path}
+          onGiveUp={playing ? () => setConfirmOpen(true) : undefined}
+        />
       </div>
+
+      <GiveUpDialog
+        open={confirmOpen && playing}
+        onConfirm={onGiveUp}
+        onCancel={() => setConfirmOpen(false)}
+      />
 
       {!playing && (
         <ResultDialog

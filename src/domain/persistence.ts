@@ -57,7 +57,9 @@ export function deserializeGame(raw: string | null): GameState | null {
     if (path[i].type === path[i - 1].type) return null;
   }
 
-  const { startedAt, finishedAt } = g;
+  const { startedAt, finishedAt, gaveUp } = g;
+  if (gaveUp !== undefined && typeof gaveUp !== "boolean") return null;
+  if (gaveUp === true && status !== "lost") return null;
   if (startedAt !== null && typeof startedAt !== "number") return null;
   if (finishedAt !== null && typeof finishedAt !== "number") return null;
 
@@ -76,7 +78,14 @@ export function deserializeGame(raw: string | null): GameState | null {
     if (last.type !== "player" || last.id !== challenge.destinationId) return null;
   }
 
-  return { challenge, status, path, startedAt, finishedAt };
+  return {
+    challenge,
+    status,
+    path,
+    startedAt,
+    finishedAt,
+    ...(gaveUp === true ? { gaveUp: true } : {}),
+  };
 }
 
 /**

@@ -117,6 +117,60 @@ describe.skipIf(!hasDb)("POST /api/challenge/finish (integración)", () => {
     expect((await res.json()).reason).toBe("INCOMPLETE");
   });
 
+  describe("rendirse (gaveUp)", () => {
+    it("un camino incompleto con gaveUp es una derrota válida y muestra el camino más corto", async () => {
+      const id = await challengeId(testDates().today);
+      const res = await post({
+        challengeId: id,
+        path: winPath.slice(0, 3),
+        elapsedMs: 60_000,
+        gaveUp: true,
+      });
+      expect(res.status).toBe(200);
+      const body = await res.json();
+      expect(body).toMatchObject({ valid: true, result: "lost", jumps: 2, gaveUp: true });
+      expect(body.optimal.length).toBe(4);
+      expect(body.optimal.path).toHaveLength(5);
+    });
+
+    it("rendirse sin haber hecho saltos también es válido", async () => {
+      const id = await challengeId(testDates().today);
+      const res = await post({
+        challengeId: id,
+        path: [winPath[0]],
+        elapsedMs: 2_000,
+        gaveUp: true,
+      });
+      expect(res.status).toBe(200);
+      expect((await res.json()).jumps).toBe(0);
+    });
+
+    it("con gaveUp, un camino que llegó al destino se rechaza", async () => {
+      const id = await challengeId(testDates().today);
+      const res = await post({ challengeId: id, path: winPath, elapsedMs: 60_000, gaveUp: true });
+      expect(res.status).toBe(422);
+      const text = await res.text();
+      expect(JSON.parse(text).reason).toBe("INVALID_GIVE_UP");
+      expect(text).not.toMatch(/optimal/i);
+    });
+
+    it("gaveUp debe ser booleano", async () => {
+      const res = await post({
+        challengeId: 1,
+        path: winPath.slice(0, 3),
+        elapsedMs: 60_000,
+        gaveUp: "si",
+      });
+      expect(res.status).toBe(400);
+    });
+
+    it("sin gaveUp, un camino incompleto sigue rechazándose", async () => {
+      const id = await challengeId(testDates().today);
+      const res = await post({ challengeId: id, path: winPath.slice(0, 3), elapsedMs: 60_000 });
+      expect((await res.json()).reason).toBe("INCOMPLETE");
+    });
+  });
+
   it("un desafío futuro no existe todavía: 404 (no se puede espiar la solución)", async () => {
     const id = await challengeId(testDates().tomorrow);
     const res = await post({ challengeId: id, path: winPath, elapsedMs: 60_000 });

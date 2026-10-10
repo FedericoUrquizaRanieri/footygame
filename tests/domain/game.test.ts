@@ -4,6 +4,7 @@ import {
   createGame,
   currentNode,
   elapsedMs,
+  giveUp,
   jumpsOf,
   remainingJumps,
   selectNode,
@@ -167,5 +168,51 @@ describe("derrota por límite de saltos", () => {
     s = selectNode(s, playerNode(DI_MARIA), T0 + 20_000);
     expect(jumpsOf(s)).toBe(MAX_JUMPS);
     expect(s.status).toBe("won");
+  });
+});
+
+describe("rendirse", () => {
+  it("termina la partida como derrota, conserva el camino y congela el tiempo", () => {
+    let s = startGame(createGame(messiToCopetti), T0);
+    s = selectNode(s, clubSeasonNode(PSG_2021), T0 + 1000);
+    const over = giveUp(s, T0 + 5000);
+    expect(over.status).toBe("lost");
+    expect(over.gaveUp).toBe(true);
+    expect(over.finishedAt).toBe(T0 + 5000);
+    expect(over.path).toEqual(s.path);
+    expect(jumpsOf(over)).toBe(1);
+    expect(elapsedMs(over, T0 + 999_999)).toBe(5000);
+  });
+
+  it("se puede rendir sin haber hecho ningún salto", () => {
+    const over = giveUp(startGame(createGame(messiToCopetti), T0), T0 + 2000);
+    expect(over.status).toBe("lost");
+    expect(jumpsOf(over)).toBe(0);
+  });
+
+  it("no muta el estado anterior", () => {
+    const before = startGame(createGame(messiToCopetti), T0);
+    const snapshot = JSON.stringify(before);
+    giveUp(before, T0 + 10);
+    expect(JSON.stringify(before)).toBe(snapshot);
+  });
+
+  it("no se puede rendir antes de Start ni después de terminar", () => {
+    expect(() => giveUp(createGame(messiToCopetti), T0)).toThrow(/NOT_STARTED/);
+    expect(() => giveUp(winningRun(), T0 + 9000)).toThrow(/FINISHED/);
+  });
+
+  it("después de rendirse no se puede seguir jugando", () => {
+    const over = giveUp(startGame(createGame(messiToCopetti), T0), T0 + 1);
+    expect(() => selectNode(over, clubSeasonNode(PSG_2021), T0 + 2)).toThrow(/FINISHED/);
+  });
+
+  it("una derrota por límite de saltos no figura como rendición", () => {
+    let s = startGame(createGame(messiToCopetti), T0);
+    for (let i = 1; i <= MAX_JUMPS; i++) {
+      s = selectNode(s, i % 2 === 1 ? clubSeasonNode(PSG_2021) : playerNode(MESSI), T0 + i * 1000);
+    }
+    expect(s.status).toBe("lost");
+    expect(s.gaveUp).toBeUndefined();
   });
 });

@@ -49,6 +49,7 @@ export interface FinishResult {
   };
   extraJumps: number;
   isOptimal: boolean;
+  gaveUp?: true;
 }
 
 /** Cierra el intento en el servidor, que valida el camino y devuelve el camino más corto. */
@@ -56,6 +57,7 @@ export async function finishChallenge(body: {
   challengeId: number;
   path: NodeRef[];
   elapsedMs: number;
+  gaveUp?: boolean;
 }): Promise<FinishResult> {
   const res = await fetch("/api/challenge/finish", {
     method: "POST",

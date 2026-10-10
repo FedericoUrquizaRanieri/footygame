@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- el test manipula JSON arbitrario a propósito */
 import { describe, expect, it } from "vitest";
-import { createGame, elapsedMs, selectNode, startGame } from "@/domain/game";
+import { createGame, elapsedMs, giveUp, selectNode, startGame } from "@/domain/game";
 import {
   STORAGE_VERSION,
   deserializeGame,
@@ -117,5 +117,26 @@ describe("settleStaleGame", () => {
   it("una partida ya terminada de un día anterior queda como está", () => {
     const s = won();
     expect(settleStaleGame(s, "2026-10-09", T0 + 99999)).toEqual(s);
+  });
+});
+
+describe("partida rendida", () => {
+  it("round-trip conserva que fue una rendición", () => {
+    const over = giveUp(playing(), T0 + 3000);
+    const restored = deserializeGame(serializeGame(over));
+    expect(restored).toEqual(over);
+    expect(restored?.gaveUp).toBe(true);
+  });
+
+  it("rechaza gaveUp en una partida que no está perdida", () => {
+    const parsed = JSON.parse(serializeGame(playing()));
+    parsed.game.gaveUp = true;
+    expect(deserializeGame(JSON.stringify(parsed))).toBeNull();
+  });
+
+  it("rechaza gaveUp que no es booleano", () => {
+    const parsed = JSON.parse(serializeGame(giveUp(playing(), T0 + 3000)));
+    parsed.game.gaveUp = "si";
+    expect(deserializeGame(JSON.stringify(parsed))).toBeNull();
   });
 });

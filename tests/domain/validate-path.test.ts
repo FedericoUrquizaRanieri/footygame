@@ -102,3 +102,46 @@ describe("validatePath", () => {
     });
   });
 });
+
+describe("validatePath: rendición", () => {
+  const giveUpValidate = (path: NodeRef[], elapsed = okTime(Math.max(path.length - 1, 0))) =>
+    validatePath(miniGraph, messiToCopetti, path, elapsed, { gaveUp: true });
+
+  it("acepta un camino incompleto como derrota por rendición", () => {
+    expect(giveUpValidate(winPath.slice(0, 3))).toEqual({
+      valid: true,
+      result: "lost",
+      jumps: 2,
+      gaveUp: true,
+    });
+  });
+
+  it("acepta rendirse sin haber hecho saltos", () => {
+    expect(giveUpValidate([pl(MESSI)], 1000)).toEqual({
+      valid: true,
+      result: "lost",
+      jumps: 0,
+      gaveUp: true,
+    });
+  });
+
+  it("rechaza si el camino llegó al destino (eso es una victoria, no una rendición)", () => {
+    expect(giveUpValidate(winPath)).toEqual({ valid: false, reason: "INVALID_GIVE_UP" });
+  });
+
+  it("sigue exigiendo un camino válido y un tiempo plausible", () => {
+    expect(giveUpValidate([pl(MESSI), cs(ROSARIO_2025)])).toEqual({
+      valid: false,
+      reason: "NOT_CONNECTED",
+    });
+    expect(giveUpValidate(winPath.slice(0, 3), 10)).toEqual({
+      valid: false,
+      reason: "INVALID_TIME",
+    });
+    expect(giveUpValidate([])).toEqual({ valid: false, reason: "EMPTY_PATH" });
+  });
+
+  it("sin rendición, un camino incompleto sigue siendo inválido", () => {
+    expect(validate(winPath.slice(0, 3))).toEqual({ valid: false, reason: "INCOMPLETE" });
+  });
+});

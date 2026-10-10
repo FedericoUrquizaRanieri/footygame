@@ -71,7 +71,12 @@
     "lastJumpWarning": "This is your last jump",
     "backHint": "Going back counts as a jump.",
     "pickPlayer": "Pick a teammate",
-    "pickClub": "Pick a club and a season"
+    "pickClub": "Pick a club and a season",
+    "giveUp": "Give up",
+    "giveUpTitle": "Give up?",
+    "giveUpText": "The game ends as a loss, you will see the shortest path and today's streak is broken.",
+    "giveUpConfirm": "Yes, give up",
+    "giveUpCancel": "Keep playing"
   },
   "result": {
     "winTitle": "You made it!",
@@ -93,7 +98,9 @@
     "close": "Close",
     "home": "Back to home",
     "summary": "See summary",
-    "nextIn": "The next challenge arrives in {time}"
+    "nextIn": "The next challenge arrives in {time}",
+    "gaveUpTitle": "You gave up",
+    "gaveUpLead": "This is how to reach {to}."
   },
   "difficulty": {
     "label": "Difficulty",

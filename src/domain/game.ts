@@ -11,6 +11,8 @@ export interface GameState {
   startedAt: number | null;
   /** Instante (ms epoch) en que terminó la partida. */
   finishedAt: number | null;
+  /** true si la partida terminó porque la persona se rindió (siempre con status "lost"). */
+  gaveUp?: boolean;
 }
 
 export type GameErrorCode = "NOT_STARTED" | "ALREADY_STARTED" | "FINISHED" | "INVALID_NODE";
@@ -63,4 +65,11 @@ export function selectNode(state: GameState, node: NodeRef, now: number): GameSt
   const status: GameStatus = reachedDestination ? "won" : outOfJumps ? "lost" : "playing";
 
   return { ...state, path, status, finishedAt: status === "playing" ? null : now };
+}
+
+/** Rendirse: la partida termina como derrota y conserva el camino recorrido. */
+export function giveUp(state: GameState, now: number): GameState {
+  if (state.status === "ready") throw new GameError("NOT_STARTED");
+  if (state.status !== "playing") throw new GameError("FINISHED");
+  return { ...state, status: "lost", finishedAt: now, gaveUp: true };
 }
