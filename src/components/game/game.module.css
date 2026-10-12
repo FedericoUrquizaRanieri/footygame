@@ -296,7 +296,7 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(9.75rem, 1fr));
-  gap: 0.7rem;
+  gap: 0.5rem;
 }
 
 .card {
@@ -319,6 +319,20 @@
     box-shadow 120ms ease,
     background-color 120ms ease,
     transform 120ms ease;
+}
+
+/* Jugador: la tarjeta es la figurita, sin recuadro propio. */
+.card.playerCard {
+  align-items: center;
+  min-height: 0;
+  padding: 0.2rem;
+  background: transparent;
+  box-shadow: none;
+}
+
+.card.playerCard:hover {
+  background: rgba(10, 42, 28, 0.6);
+  box-shadow: none;
 }
 
 .card:hover {
@@ -509,14 +523,14 @@
   grid-template-columns: 2.2rem 1fr;
   column-gap: 0.7rem;
   align-items: center;
-  min-height: 2.9rem;
+  min-height: 3.4rem;
 }
 
 .chainItem:not(:last-child)::after {
   content: "";
   position: absolute;
   left: calc(1.1rem - 2px);
-  top: 2.5rem;
+  top: 2.95rem;
   bottom: -0.4rem;
   border-left: 3px dotted var(--chain-line, var(--chalk-dim));
 }
@@ -938,4 +952,19 @@
   display: block;
   color: var(--ink-dim);
   font-size: 0.95rem;
+}
+
+/* Página de créditos */
+.credits {
+  display: grid;
+  gap: 0.35rem;
+  padding-left: 1.2rem;
+  font-size: 0.9rem;
+}
+
+.creditsNav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-block: 1.5rem 3rem;
 }

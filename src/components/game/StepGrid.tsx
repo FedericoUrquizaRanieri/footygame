@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Monogram } from "@/components/ui/Monogram";
+import { Sticker } from "@/components/ui/Sticker";
 import { Shield } from "@/components/ui/Shield";
 import { filterByName } from "@/domain/search";
 import { useI18n } from "@/i18n/provider";
@@ -114,20 +114,28 @@ export function StepGrid({ step, status, destinationId, onPick, onRetry }: StepG
               <li key={nodeKey(item.node)}>
                 <button
                   type="button"
-                  className={isTarget ? `${s.card} ${s.isTarget}` : s.card}
+                  className={[
+                    s.card,
+                    isTarget ? s.isTarget : "",
+                    item.node.type === "player" ? s.playerCard : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
                   onClick={() => pick(item)}
                   onPointerEnter={() => prefetchStep(item.node)}
                   onFocus={() => prefetchStep(item.node)}
                 >
                   {item.node.type === "player" ? (
-                    <Monogram id={item.kitId} name={item.label} size="3rem" />
+                    <Sticker id={item.kitId} name={item.label} target={isTarget} tall />
                   ) : (
-                    <Shield id={item.kitId} name={item.label} size="2.6rem" />
+                    <>
+                      <Shield id={item.kitId} name={item.label} size="2.6rem" />
+                      <span className={s.cardText}>
+                        <span className={s.cardName}>{item.label}</span>
+                        {item.sublabel && <span className={s.cardSub}>{item.sublabel}</span>}
+                      </span>
+                    </>
                   )}
-                  <span className={s.cardText}>
-                    <span className={s.cardName}>{item.label}</span>
-                    {item.sublabel && <span className={s.cardSub}>{item.sublabel}</span>}
-                  </span>
                   {isTarget && <span className={s.targetTag}>{t("play.target")}</span>}
                 </button>
               </li>
