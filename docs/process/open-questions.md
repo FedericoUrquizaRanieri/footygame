@@ -24,7 +24,7 @@
 |---|---|---|
 | A1 | ¿Qué hacemos con la cobertura? Opciones A (ventana 2012–2025), B (sumar aristas inferidas por transferencias) o C (otra fuente). Ver [spike-results](../03-data/spike-results.md) | Decisión del dueño → ADR-0003 |
 | A2 | Rango de longitud de desafíos: entre estrellas casi todo da 4 o 6 saltos. ¿Aceptás 4–6 con pool famoso y hasta 8 con un pool más amplio? | Generación de desafíos |
-| A3 | Fotos y escudos reales: fuente y licencia | Después de la v1 |
+| A3 | ~~Fotos y escudos reales: fuente y licencia~~ **Resuelta**: fotos de jugadores desde Wikimedia Commons (licencias libres, con atribución en `/credits`); escudos ilustrativos propios con los colores del club | — |
 | A4 | Actualización de datos después de julio de 2026 (el dataset está pausado) | Después de la v1 |
 
 | A5 | **Dificultad de los desafíos.** Con la regla actual (4–8 saltos, ≥ 2 caminos óptimos, jugadores famosos) salieron 52 de 60 desafíos de 4 saltos, varios con 15–25 caminos óptimos distintos: tienden a ser fáciles. Opciones: exigir un máximo de caminos, preferir 6 saltos, ampliar el pool de jugadores | Generación de desafíos |

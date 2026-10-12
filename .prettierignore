@@ -4,3 +4,4 @@ coverage
 data
 docs
 package-lock.json
+src/lib/player-photo-credits.generated.json

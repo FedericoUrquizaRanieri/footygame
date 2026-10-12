@@ -207,3 +207,12 @@ export async function getOptimalPathLabeled(challengeId: number): Promise<Labele
     label: (n.type === "player" ? pName.get(n.id) : cName.get(n.id)) ?? String(n.id),
   }));
 }
+
+/** Nombres de jugadores por id (para la página de créditos). */
+export async function getPlayerNames(ids: number[]): Promise<Map<number, string>> {
+  const { rows } = await getPool().query(
+    "select id, name from players where id = any($1::bigint[])",
+    [ids],
+  );
+  return new Map(rows.map((r) => [Number(r.id), r.name as string]));
+}

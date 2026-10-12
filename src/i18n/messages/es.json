@@ -30,7 +30,7 @@
     "rule4": "Hay un desafío por día y es el mismo para todos.",
     "dataTitle": "De dónde salen los datos",
     "dataText": "Planteles de 10 ligas: Premier League, LaLiga, Serie A, Bundesliga, Ligue 1, Argentina, Brasil, Portugal, Países Bajos y MLS. Cubren de 2012/13 a 2025/26, salvo Argentina, Brasil y MLS, que solo tienen 2024 y 2025.",
-    "footer": "Proyecto independiente, sin relación con clubes, ligas ni jugadores. Datos abiertos derivados de Transfermarkt (licencia CC0). Las fotos se reemplazan por iniciales."
+    "footer": "Proyecto independiente, sin relación con clubes, ligas ni jugadores. Datos abiertos derivados de Transfermarkt (licencia CC0). Las fotos de jugadores vienen de Wikimedia Commons con licencias libres (ver créditos); los escudos son ilustraciones propias, no oficiales."
   },
   "daily": {
     "title": "Tu desafío de hoy",
@@ -145,5 +145,28 @@
     "doneTitle": "Ya jugaste este desafío",
     "practiceNote": "Es práctica: no cuenta para tu racha.",
     "backToList": "Ver más desafíos"
+  },
+  "credits": {
+    "title": "Créditos",
+    "crests": "Los escudos son ilustraciones propias que solo usan los colores de cada club. No son los escudos oficiales y los clubes no tienen relación con este proyecto.",
+    "photos": "Las fotos de jugadores vienen de Wikimedia Commons con licencias libres. Autor y licencia de cada foto:",
+    "by": "foto de {author}",
+    "prev": "← Anterior",
+    "next": "Siguiente →",
+    "pages": "Páginas de créditos"
+  },
+  "legal": {
+    "title": "Aclaraciones y retiro de contenido",
+    "purposeTitle": "Para qué usamos esto",
+    "purposeText": "footygame es un proyecto independiente, sin fines de lucro, hecho con fines educativos y recreativos. No está afiliado, patrocinado ni avalado por ningún club, liga, jugador ni por Transfermarkt.",
+    "crestsTitle": "Escudos",
+    "crestsText": "No usamos escudos oficiales. Cada club se representa con una ilustración propia que solo toma los colores de su camiseta, para que se pueda reconocer. No copia ningún emblema ni símbolo y no pretende hacerse pasar por el club.",
+    "photosTitle": "Fotos de jugadores",
+    "photosText": "Usamos únicamente fotos de Wikimedia Commons con licencias libres que permiten reutilizarlas (CC BY, CC BY-SA, CC0 o dominio público). Cada foto lleva su atribución en la página de créditos. No tomamos imágenes de sitios que no las licencian.",
+    "dataTitle": "Datos",
+    "dataText": "Los datos de jugadores y clubes derivan de un conjunto abierto de Transfermarkt publicado con licencia CC0. Los nombres se usan solo para identificar a cada persona o club.",
+    "removalTitle": "Pedidos de retiro",
+    "removalText": "Si sos un jugador, un club, un fotógrafo o un titular de derechos y querés que quitemos una foto, un nombre o cualquier otro contenido, avisanos y lo retiramos sin vueltas.",
+    "contact": "Escribinos a:"
   }
 }

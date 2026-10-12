@@ -96,6 +96,10 @@ export default async function LandingPage({ params }: PageProps<"/[locale]">) {
       <footer className={s.footer}>
         <div className="container">
           <p>{t("landing.footer")}</p>
+          <p>
+            <Link href={`/${locale}/credits`}>{t("credits.title")}</Link> ·{" "}
+            <Link href={`/${locale}/legal`}>{t("legal.title")}</Link>
+          </p>
         </div>
       </footer>
     </>

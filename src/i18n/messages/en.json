@@ -30,7 +30,7 @@
     "rule4": "There is one challenge per day, the same for everyone.",
     "dataTitle": "Where the data comes from",
     "dataText": "Squads from 10 leagues: Premier League, LaLiga, Serie A, Bundesliga, Ligue 1, Argentina, Brazil, Portugal, Netherlands and MLS. They cover 2012/13 to 2025/26, except Argentina, Brazil and MLS, which only have 2024 and 2025.",
-    "footer": "Independent project, not affiliated with any club, league or player. Open data derived from Transfermarkt (CC0 license). Photos are replaced by initials."
+    "footer": "Independent project, not affiliated with any club, league or player. Open data derived from Transfermarkt (CC0 license). Player photos come from Wikimedia Commons under free licenses (see credits); club crests are original illustrations, not official."
   },
   "daily": {
     "title": "Your challenge today",
@@ -145,5 +145,28 @@
     "doneTitle": "You already played this challenge",
     "practiceNote": "This is practice: it doesn't count for your streak.",
     "backToList": "More challenges"
+  },
+  "credits": {
+    "title": "Credits",
+    "crests": "Club crests are original illustrations that only use each club's colors. They are not official crests and the clubs are not affiliated with this project.",
+    "photos": "Player photos come from Wikimedia Commons under free licenses. Each photo's author and license:",
+    "by": "photo by {author}",
+    "prev": "← Previous",
+    "next": "Next →",
+    "pages": "Credit pages"
+  },
+  "legal": {
+    "title": "Notices and content removal",
+    "purposeTitle": "What this is for",
+    "purposeText": "footygame is an independent, non-profit project made for educational and recreational purposes. It is not affiliated with, sponsored by or endorsed by any club, league, player or Transfermarkt.",
+    "crestsTitle": "Crests",
+    "crestsText": "We do not use official crests. Each club is shown with an original illustration that only borrows its shirt colors so it can be recognized. It copies no emblem or symbol and does not try to pass as the club.",
+    "photosTitle": "Player photos",
+    "photosText": "We only use Wikimedia Commons photos under free licenses that allow reuse (CC BY, CC BY-SA, CC0 or public domain). Each photo is credited on the credits page. We do not take images from sites that do not license them.",
+    "dataTitle": "Data",
+    "dataText": "Player and club data derive from an open Transfermarkt dataset published under a CC0 license. Names are used only to identify each person or club.",
+    "removalTitle": "Removal requests",
+    "removalText": "If you are a player, a club, a photographer or a rights holder and want us to remove a photo, a name or any other content, let us know and we will take it down promptly.",
+    "contact": "Write to us at:"
   }
 }

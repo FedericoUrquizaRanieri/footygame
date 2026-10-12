@@ -19,7 +19,7 @@
 - Panel de administración (los desafíos se generan con un script).
 - Cuentas de usuario.
 - Selecciones nacionales como nodos (descartado por ahora).
-- Fotos y escudos reales.
+- Escudos oficiales (se usan escudos ilustrativos con los colores del club).
 - Pistas.
 - App móvil nativa.
 

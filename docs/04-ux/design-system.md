@@ -30,7 +30,9 @@ Un tema único (no hay modo claro/oscuro): la cancha es la identidad. Decisión 
 - El reloj usa dígitos de ancho fijo para que no tiemble.
 
 ## Imágenes
-La v1 no usa fotos ni escudos reales (decisión de licencias). Se reemplazan por **monogramas y escudos de reemplazo** con colores de camiseta deterministas: el mismo jugador o club siempre tiene los mismos colores (`src/lib/kits.ts`). Un club mantiene su color en todas sus temporadas.
+- **Jugadores**: foto real de Wikimedia Commons (solo CC BY, CC BY-SA, CC0 o dominio público), descargada y alojada en `public/players/<id>.jpg` (sin hotlinking). Se muestra sobre el monograma (`PlayerPhoto`); si el jugador no tiene foto libre, queda el monograma con colores deterministas (`src/lib/kits.ts`). La atribución de cada foto está en la página `/credits`.
+- **Clubes**: escudos **ilustrativos, no oficiales**. Usan los colores y el diseño de camiseta reales del club (`src/lib/club-colors.ts`) sobre una silueta propia, sin letras. No copian ningún emblema, animal ni símbolo del club. Un club mantiene su aspecto en todas sus temporadas. Si un club no está en la tabla, se usa el color determinista de `kits.ts`.
+- La página de créditos y el pie de la landing aclaran que los escudos no son oficiales.
 
 ## Movimiento
 - Una sola animación autónoma: la ruta de la landing (≈ 2,5 s).
