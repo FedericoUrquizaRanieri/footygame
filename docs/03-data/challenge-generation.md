@@ -20,7 +20,7 @@ Lunes y martes fácil, miércoles y jueves media, viernes y sábado difícil, do
 ## Algoritmo
 1. Se calcula la fama de todos los jugadores del grafo.
 2. Para cada fecha sin desafío se toma el nivel que corresponde a su día de la semana.
-3. Se sortean pares de jugadores de un conjunto que depende del nivel: fácil solo percentil 95 o más, media 85 o más, difícil 70 o más. **La dificultad tiene que venir del camino, no de jugadores desconocidos.**
+3. Se sortean pares de jugadores de un conjunto que depende del nivel: fácil solo percentil 95 o más, media 90 o más, difícil 85 o más (bajar más de ahí hace aparecer jugadores poco conocidos; subir más deja casi sin desafíos difíciles). **La dificultad tiene que venir del camino, no de jugadores desconocidos.**
 4. Se calcula el camino más corto (BFS) y el nivel real del par. Se acepta si coincide con el objetivo y el camino mide entre 4 y 8 saltos.
 5. No se repiten jugadores en una ventana de 60 días (hacia atrás y hacia adelante).
 6. Se guardan `optimal_length`, `optimal_paths_count`, `optimal_path`, `difficulty` y `difficulty_score`.
@@ -31,4 +31,4 @@ Lunes y martes fácil, miércoles y jueves media, viernes y sábado difícil, do
 - `--recompute` recalcula el nivel de desafíos existentes si cambian las reglas; `--regenerate` rehace los futuros (nunca toca los de hoy ni los pasados).
 
 ## Estado actual
-90 desafíos: 30 pasados (para práctica), el de hoy y 59 futuros. Reparto: 26 fáciles, 39 medias y 25 difíciles; 4, 6 y 8 saltos.
+90 desafíos: 30 pasados (para práctica, sin tocar), el de hoy y 59 futuros regenerados el 2026-10-12 con los pools nuevos. Los futuros: 17 fáciles, 26 medias y 16 difíciles; 37 de 4 saltos, 16 de 6 y 6 de 8.

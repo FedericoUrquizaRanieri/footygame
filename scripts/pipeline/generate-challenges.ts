@@ -31,8 +31,10 @@ const MAX_LENGTH = 8;
 /**
  * Mínima fama de los jugadores que se sortean para cada nivel. Incluso en "difícil" son jugadores que un
  * aficionado conoce: la dificultad tiene que venir del camino (largo y pocos caminos), no de la oscuridad.
+ * Entre famosos casi no hay caminos largos ni escasos, por eso "difícil" no puede bajar del percentil 85
+ * (simulado: con el percentil 95 solo 3 de 5775 pares eran difíciles).
  */
-const MIN_FAME_FOR: Record<Difficulty, number> = { easy: 0.95, medium: 0.85, hard: 0.7 };
+const MIN_FAME_FOR: Record<Difficulty, number> = { easy: 0.95, medium: 0.9, hard: 0.85 };
 
 const flag = (name: string) => process.argv.includes(`--${name}`);
 function arg(name: string, fallback: number): number {
