@@ -1,0 +1,53 @@
+.stage {
+  position: relative;
+  isolation: isolate;
+  min-height: 100dvh;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Héroe: el césped ocupa solo su sección y sigue el scroll con ella. */
+.contained {
+  position: absolute;
+  z-index: 0;
+}
+
+.lines {
+  width: 100%;
+  height: 100%;
+  color: var(--chalk-line);
+  animation: chalk-in 1.4s ease-out both;
+}
+
+/* Viñeta: oscurece los bordes, como el campo visto bajo reflectores. */
+.backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 120% 95% at 50% 38%, transparent 52%, rgba(3, 14, 9, 0.62));
+}
+
+/* Pantallas de lectura y decisión: la cancha baja de volumen. */
+.calm::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(8, 30, 20, 0.42);
+}
+
+.calm .lines {
+  opacity: 0.55;
+}
+
+@keyframes chalk-in {
+  from {
+    opacity: 0;
+  }
+}

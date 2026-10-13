@@ -23,6 +23,7 @@
   gap: 0.6rem;
   text-decoration: none;
   font-family: var(--font-display);
+  font-stretch: var(--display-stretch);
   font-size: 1.9rem;
   font-weight: 900;
   line-height: 1;

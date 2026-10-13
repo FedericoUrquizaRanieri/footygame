@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PageStage } from "@/components/ui/PageStage";
 import { SiteHeader } from "@/components/ui/SiteHeader";
 import { hasLocale } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
@@ -15,7 +16,7 @@ export default async function LegalPage({ params }: PageProps<"/[locale]/legal">
   if (!hasLocale(locale)) notFound();
   const t = createT(getMessages(locale));
   return (
-    <>
+    <PageStage zone="corner" calm>
       <SiteHeader locale={locale} />
       <main id="main" className="container">
         <h1>{t("legal.title")}</h1>
@@ -34,6 +35,6 @@ export default async function LegalPage({ params }: PageProps<"/[locale]/legal">
           <Link href={`/${locale}/credits`}>{t("credits.title")}</Link>
         </p>
       </main>
-    </>
+    </PageStage>
   );
 }

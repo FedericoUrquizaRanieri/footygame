@@ -11,6 +11,13 @@ export interface StepItem {
   fullLabel: string;
   /** Id que define los colores de camiseta (el club, no la temporada, para que un club mantenga su color). */
   kitId: number;
+  /** Código de liga del club (solo en los club-temporadas): dato de la figurita del club. */
+  league?: string;
+  /** Valor de mercado máximo en euros (solo en los jugadores; puede no haber): dato de la figurita. */
+  marketValueEur?: number | null;
+  /** País y posición (solo en los jugadores; pueden faltar): los datos fijos de la figurita. */
+  nationality?: string | null;
+  position?: string | null;
 }
 
 /** Siguiente paso desde un nodo: qué nodo es y qué se puede elegir a continuación. */
@@ -23,12 +30,18 @@ export interface Step {
 
 interface PlayerStepResponse {
   player: { id: number; name: string };
-  items: { id: number; clubName: string; seasonLabel: string }[];
+  items: { id: number; clubName: string; seasonLabel: string; league?: string }[];
 }
 
 interface ClubSeasonStepResponse {
   clubSeason: { id: number; clubName: string; seasonLabel: string };
-  items: { id: number; name: string }[];
+  items: {
+    id: number;
+    name: string;
+    marketValueEur?: number | null;
+    nationality?: string | null;
+    position?: string | null;
+  }[];
 }
 
 /** El id de un club-temporada es club_id * 10000 + año (ver docs/02-architecture/data-model.md). */
@@ -44,6 +57,7 @@ export function normalizePlayerStep(data: PlayerStepResponse): Step {
       sublabel: i.seasonLabel,
       fullLabel: `${i.clubName} ${i.seasonLabel}`,
       kitId: clubIdOf(i.id),
+      league: i.league,
     })),
   };
 }
@@ -58,6 +72,9 @@ export function normalizeClubSeasonStep(data: ClubSeasonStepResponse): Step {
       label: p.name,
       fullLabel: p.name,
       kitId: p.id,
+      marketValueEur: p.marketValueEur,
+      nationality: p.nationality,
+      position: p.position,
     })),
   };
 }

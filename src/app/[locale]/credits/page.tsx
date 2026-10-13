@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
+import { PageStage } from "@/components/ui/PageStage";
 import { SiteHeader } from "@/components/ui/SiteHeader";
 import { hasLocale, type Locale } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
@@ -68,16 +69,17 @@ export default async function CreditsPage({
   if (!hasLocale(locale)) notFound();
   const t = createT(getMessages(locale));
   return (
-    <>
+    <PageStage zone="corner" calm>
       <SiteHeader locale={locale} />
       <main id="main" className="container">
         <h1>{t("credits.title")}</h1>
         <p>{t("credits.crests")}</p>
+        <p>{t("credits.flags")}</p>
         <p>{t("credits.photos")}</p>
         <Suspense fallback={null}>
           <PhotoCredits locale={locale} searchParams={searchParams} />
         </Suspense>
       </main>
-    </>
+    </PageStage>
   );
 }

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { BriefingScreen } from "@/components/game/BriefingScreen";
+import { PageStage } from "@/components/ui/PageStage";
 import { SiteHeader } from "@/components/ui/SiteHeader";
 import { challengeDateFor, isArchiveDate } from "@/domain/daily-date";
 import { hasLocale } from "@/i18n/config";
@@ -19,12 +20,12 @@ async function ArchiveBriefing({ params }: { params: Params }) {
   if (!challenge) notFound();
 
   return (
-    <>
+    <PageStage zone="box">
       <SiteHeader locale={locale} />
       <main id="main" className="container">
         <BriefingScreen challenge={challenge} mode="archive" />
       </main>
-    </>
+    </PageStage>
   );
 }
 

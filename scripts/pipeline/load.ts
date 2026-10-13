@@ -32,6 +32,8 @@ interface PlayerRow {
   id: number;
   name: string;
   market_value_eur: number | null;
+  nationality?: string | null;
+  position?: string | null;
 }
 interface ClubRow {
   id: number;
@@ -76,15 +78,18 @@ export async function loadAll(adminUrl: string): Promise<Record<string, number>>
 
     await inBatches(players, (p) =>
       client.query(
-        `insert into players (id, name, name_search, market_value_eur)
-         select * from unnest($1::bigint[], $2::text[], $3::text[], $4::bigint[])
+        `insert into players (id, name, name_search, market_value_eur, nationality, position)
+         select * from unnest($1::bigint[], $2::text[], $3::text[], $4::bigint[], $5::text[], $6::text[])
          on conflict (id) do update set name = excluded.name, name_search = excluded.name_search,
-           market_value_eur = excluded.market_value_eur`,
+           market_value_eur = excluded.market_value_eur, nationality = excluded.nationality,
+           position = excluded.position`,
         [
           p.map((x) => x.id),
           p.map((x) => x.name),
           p.map((x) => normalizeText(x.name)),
           p.map((x) => x.market_value_eur),
+          p.map((x) => x.nationality ?? null),
+          p.map((x) => x.position ?? null),
         ],
       ),
     );

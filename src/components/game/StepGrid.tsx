@@ -1,11 +1,14 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { ClubSticker } from "@/components/ui/ClubSticker";
 import { Sticker } from "@/components/ui/Sticker";
-import { Shield } from "@/components/ui/Shield";
 import { filterByName } from "@/domain/search";
 import { useI18n } from "@/i18n/provider";
 import { prefetchStep } from "@/lib/api-client";
+import { FOIL_VALUE_EUR, formatMarketValue } from "@/lib/format";
+import { leagueName } from "@/lib/leagues";
+import { nationalityInfo } from "@/lib/nationalities";
 import { nodeKey, type Step, type StepItem } from "@/lib/steps";
 import s from "./game.module.css";
 
@@ -20,7 +23,7 @@ interface StepGridProps {
 
 /** Buscador y grilla de opciones del paso actual. */
 export function StepGrid({ step, status, destinationId, onPick, onRetry }: StepGridProps) {
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -30,6 +33,17 @@ export function StepGrid({ step, status, destinationId, onPick, onRetry }: StepG
     items.map((item) => ({ ...item, name: item.fullLabel })),
     query,
   );
+
+  // Bandera y posición de la figurita; si el dato falta, la franja queda vacía pero reservada.
+  const profileOf = (item: StepItem) => {
+    const country = nationalityInfo(item.nationality, locale);
+    const pos = item.position;
+    return {
+      flagSrc: country?.flagSrc,
+      country: country?.name,
+      position: pos ? { short: t(`positionShort.${pos}`), long: t(`position.${pos}`) } : undefined,
+    };
+  };
 
   const pick = (item: StepItem) => {
     setQuery("");
@@ -114,11 +128,7 @@ export function StepGrid({ step, status, destinationId, onPick, onRetry }: StepG
               <li key={nodeKey(item.node)}>
                 <button
                   type="button"
-                  className={[
-                    s.card,
-                    isTarget ? s.isTarget : "",
-                    item.node.type === "player" ? s.playerCard : "",
-                  ]
+                  className={[s.card, isTarget ? s.isTarget : "", s.stickerCard]
                     .filter(Boolean)
                     .join(" ")}
                   onClick={() => pick(item)}
@@ -126,15 +136,28 @@ export function StepGrid({ step, status, destinationId, onPick, onRetry }: StepG
                   onFocus={() => prefetchStep(item.node)}
                 >
                   {item.node.type === "player" ? (
-                    <Sticker id={item.kitId} name={item.label} target={isTarget} tall />
+                    <Sticker
+                      id={item.kitId}
+                      name={item.label}
+                      target={isTarget}
+                      tall
+                      profile={profileOf(item)}
+                      foil={(item.marketValueEur ?? 0) >= FOIL_VALUE_EUR}
+                      meta={
+                        item.marketValueEur
+                          ? t("sticker.value", {
+                              value: formatMarketValue(item.marketValueEur, locale),
+                            })
+                          : t("sticker.noValue")
+                      }
+                    />
                   ) : (
-                    <>
-                      <Shield id={item.kitId} name={item.label} size="2.6rem" />
-                      <span className={s.cardText}>
-                        <span className={s.cardName}>{item.label}</span>
-                        {item.sublabel && <span className={s.cardSub}>{item.sublabel}</span>}
-                      </span>
-                    </>
+                    <ClubSticker
+                      id={item.kitId}
+                      name={item.label}
+                      season={item.sublabel}
+                      league={leagueName(item.league)}
+                    />
                   )}
                   {isTarget && <span className={s.targetTag}>{t("play.target")}</span>}
                 </button>

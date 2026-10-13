@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { PlayScreen } from "@/components/game/PlayScreen";
+import { PageStage } from "@/components/ui/PageStage";
 import { SiteHeader } from "@/components/ui/SiteHeader";
 import { isArchiveDate } from "@/domain/daily-date";
 import { hasLocale } from "@/i18n/config";
@@ -14,10 +15,10 @@ async function ArchivePlay({ params }: { params: Params }) {
   if (!isArchiveDate(date, "9999-12-31")) notFound();
 
   return (
-    <>
+    <PageStage zone="center" calm>
       <SiteHeader locale={locale} />
       <PlayScreen mode="archive" date={date} />
-    </>
+    </PageStage>
   );
 }
 

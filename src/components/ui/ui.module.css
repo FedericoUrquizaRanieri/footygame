@@ -1,6 +1,7 @@
 /* Figurita de jugador */
 .sticker {
   --w: var(--sticker-w, 9rem);
+  position: relative;
   --bg: #1f5fa8;
   --fg: #f1f3ec;
   display: flex;
@@ -13,6 +14,43 @@
   color: var(--ink);
   rotate: var(--tilt, 0deg);
   box-shadow: 0 6px 0 rgba(0, 0, 0, 0.22);
+  transition:
+    rotate 260ms cubic-bezier(0.2, 1.2, 0.4, 1),
+    translate 260ms cubic-bezier(0.2, 1.2, 0.4, 1),
+    box-shadow 260ms ease;
+}
+
+/* Brillo de figurita holográfica: pasa una sola vez cuando la tocás o la mirás de cerca. */
+.sticker::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.45) 46%,
+    rgba(138, 212, 245, 0.35) 50%,
+    rgba(255, 209, 46, 0.3) 54%,
+    transparent 62%
+  );
+  background-size: 260% 100%;
+  background-position: 130% 0;
+  transition: background-position 700ms ease;
+}
+
+.sticker:hover,
+:is(button, a):hover > .sticker,
+:is(button, a):focus-visible > .sticker {
+  rotate: 0deg;
+  translate: 0 -4px;
+  box-shadow: 0 10px 0 rgba(0, 0, 0, 0.2);
+}
+
+.sticker:hover::after,
+:is(button, a):hover > .sticker::after,
+:is(button, a):focus-visible > .sticker::after {
+  background-position: -30% 0;
 }
 
 .sticker.sm {
@@ -28,12 +66,64 @@
   background: var(--sky);
 }
 
+/* Marco de álbum: el color de la camiseta rodea la foto, con el escudito y la temporada arriba. */
+.frame {
+  position: relative;
+  display: grid;
+  gap: 0.28rem;
+  padding: 0.3rem;
+  background: linear-gradient(165deg, var(--bg), color-mix(in srgb, var(--bg) 62%, #000));
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 1.15rem;
+  padding-inline: 0.1rem;
+  color: var(--fg);
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.top .shield {
+  height: 1.1rem;
+  width: 0.92rem;
+}
+
+.flag {
+  flex: none;
+  width: 1.15rem;
+  height: 0.86rem;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+  object-fit: cover;
+}
+
+.topText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.star {
+  margin-left: auto;
+  color: #ffe27a;
+  font-size: 0.85rem;
+  text-shadow: 0 0 0.5rem rgba(255, 226, 122, 0.8);
+}
+
 .band {
   position: relative;
   overflow: hidden;
   display: grid;
   place-items: center;
   aspect-ratio: 5 / 4;
+  border-radius: 4px;
+  box-shadow: 0 0 0 2px rgba(241, 243, 236, 0.92);
   background-color: var(--bg);
   background-image: repeating-linear-gradient(
     115deg,
@@ -42,6 +132,7 @@
   );
   color: var(--fg);
   font-family: var(--font-display);
+  font-stretch: var(--display-stretch);
   font-size: calc(var(--w) * 0.36);
   font-weight: 900;
   line-height: 1;
@@ -60,6 +151,7 @@
   height: 3.1em;
   padding: 0.25rem 0.5rem;
   font-family: var(--font-display);
+  font-stretch: var(--display-stretch);
   font-size: clamp(1.05rem, calc(var(--w) * 0.14), 1.6rem);
   font-weight: 800;
   line-height: 1.04;
@@ -77,6 +169,67 @@
   line-height: 1;
 }
 
+/* Dato al pie de la figurita (valor de mercado, temporada). */
+.meta {
+  margin: 0 0.45rem 0.45rem;
+  padding-top: 0.3rem;
+  border-top: 2px dashed rgba(14, 34, 25, 0.2);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--ink-dim);
+}
+
+.season {
+  font-family: var(--font-display);
+  font-stretch: var(--display-stretch);
+  font-size: 1.45rem;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--ink);
+}
+
+/* Figurita brillante: reflejo de colores sobre el marco y la foto, que se corre al mirarla de cerca. */
+.foil {
+  border-color: #f6e8b6;
+}
+
+.foil .frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 70, 150, 0.4),
+    rgba(255, 215, 0, 0.36) 30%,
+    rgba(60, 220, 255, 0.4) 55%,
+    rgba(150, 90, 255, 0.4) 80%
+  );
+  background-size: 240% 100%;
+  background-position: 0 0;
+  mix-blend-mode: soft-light;
+  transition: background-position 900ms ease;
+}
+
+.foil:hover .frame::after,
+:is(button, a):hover > .foil .frame::after,
+:is(button, a):focus-visible > .foil .frame::after {
+  background-position: 100% 0;
+}
+
+/* Figurita de club: el escudo, con su forma de siempre, sobre un fondo del color del club. */
+.crestWindow {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 5 / 4;
+  border-radius: 4px;
+  box-shadow: 0 0 0 2px rgba(241, 243, 236, 0.92);
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255, 255, 255, 0.22), transparent 62%),
+    color-mix(in srgb, var(--bg) var(--mix, 42%), #0b2418);
+}
+
 /* Escudo de club (reemplazo del escudo real) */
 .shield {
   --s: 4.5rem;
@@ -87,6 +240,7 @@
 
 .shield text {
   font-family: var(--font-display);
+  font-stretch: var(--display-stretch);
   font-weight: 900;
 }
 
@@ -110,6 +264,7 @@
   background: var(--bg, #1f5fa8);
   color: var(--fg, #f1f3ec);
   font-family: var(--font-display);
+  font-stretch: var(--display-stretch);
   font-size: calc(var(--s) * 0.46);
   font-weight: 900;
   line-height: 1;

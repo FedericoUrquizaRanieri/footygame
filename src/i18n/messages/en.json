@@ -30,7 +30,8 @@
     "rule4": "There is one challenge per day, the same for everyone.",
     "dataTitle": "Where the data comes from",
     "dataText": "Squads from 10 leagues: Premier League, LaLiga, Serie A, Bundesliga, Ligue 1, Argentina, Brazil, Portugal, Netherlands and MLS. They cover 2012/13 to 2025/26, except Argentina, Brazil and MLS, which only have 2024 and 2025.",
-    "footer": "Independent project, not affiliated with any club, league or player. Open data derived from Transfermarkt (CC0 license). Player photos come from Wikimedia Commons under free licenses (see credits); club crests are original illustrations, not official."
+    "footer": "Independent project, not affiliated with any club, league or player. Open data derived from Transfermarkt (CC0 license). Player photos come from Wikimedia Commons under free licenses (see credits); club crests are original illustrations, not official.",
+    "boardLabel": "Past challenges, on the board"
   },
   "daily": {
     "title": "Your challenge today",
@@ -153,7 +154,8 @@
     "by": "photo by {author}",
     "prev": "← Previous",
     "next": "Next →",
-    "pages": "Credit pages"
+    "pages": "Credit pages",
+    "flags": "Flags are from flag-icons (MIT license), resized."
   },
   "legal": {
     "title": "Notices and content removal",
@@ -168,5 +170,21 @@
     "removalTitle": "Removal requests",
     "removalText": "If you are a player, a club, a photographer or a rights holder and want us to remove a photo, a name or any other content, let us know and we will take it down promptly.",
     "contact": "Write to us at:"
+  },
+  "sticker": {
+    "value": "Value {value}",
+    "noValue": "No value"
+  },
+  "position": {
+    "Goalkeeper": "Goalkeeper",
+    "Defender": "Defender",
+    "Midfield": "Midfielder",
+    "Attack": "Forward"
+  },
+  "positionShort": {
+    "Goalkeeper": "GK",
+    "Defender": "DEF",
+    "Midfield": "MID",
+    "Attack": "FWD"
   }
 }

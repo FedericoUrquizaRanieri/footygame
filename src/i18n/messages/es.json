@@ -30,7 +30,8 @@
     "rule4": "Hay un desafío por día y es el mismo para todos.",
     "dataTitle": "De dónde salen los datos",
     "dataText": "Planteles de 10 ligas: Premier League, LaLiga, Serie A, Bundesliga, Ligue 1, Argentina, Brasil, Portugal, Países Bajos y MLS. Cubren de 2012/13 a 2025/26, salvo Argentina, Brasil y MLS, que solo tienen 2024 y 2025.",
-    "footer": "Proyecto independiente, sin relación con clubes, ligas ni jugadores. Datos abiertos derivados de Transfermarkt (licencia CC0). Las fotos de jugadores vienen de Wikimedia Commons con licencias libres (ver créditos); los escudos son ilustraciones propias, no oficiales."
+    "footer": "Proyecto independiente, sin relación con clubes, ligas ni jugadores. Datos abiertos derivados de Transfermarkt (licencia CC0). Las fotos de jugadores vienen de Wikimedia Commons con licencias libres (ver créditos); los escudos son ilustraciones propias, no oficiales.",
+    "boardLabel": "Desafíos anteriores, en cartelera"
   },
   "daily": {
     "title": "Tu desafío de hoy",
@@ -153,7 +154,8 @@
     "by": "foto de {author}",
     "prev": "← Anterior",
     "next": "Siguiente →",
-    "pages": "Páginas de créditos"
+    "pages": "Páginas de créditos",
+    "flags": "Las banderas son de flag-icons (licencia MIT), reducidas de tamaño."
   },
   "legal": {
     "title": "Aclaraciones y retiro de contenido",
@@ -168,5 +170,21 @@
     "removalTitle": "Pedidos de retiro",
     "removalText": "Si sos un jugador, un club, un fotógrafo o un titular de derechos y querés que quitemos una foto, un nombre o cualquier otro contenido, avisanos y lo retiramos sin vueltas.",
     "contact": "Escribinos a:"
+  },
+  "sticker": {
+    "value": "Valor {value}",
+    "noValue": "Sin valor"
+  },
+  "position": {
+    "Goalkeeper": "Arquero",
+    "Defender": "Defensor",
+    "Midfield": "Mediocampista",
+    "Attack": "Delantero"
+  },
+  "positionShort": {
+    "Goalkeeper": "ARQ",
+    "Defender": "DEF",
+    "Midfield": "MED",
+    "Attack": "DEL"
   }
 }
