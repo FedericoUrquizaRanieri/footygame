@@ -46,4 +46,4 @@ RLS activado en todas las tablas. Solo el rol `footygame_app` (solo lectura) tie
 
 ## Pendientes
 - Cedidos y transferencias a mitad de temporada: aparece una fila por club distinto en la misma temporada.
-- Imágenes reales (fotos y escudos) y su licencia.
+- `players.photo_url` y `clubs.logo_url` quedan sin usar: las fotos se resuelven por convención (`/players/<id>.jpg`, ids en `player-photos.generated.ts`) y los escudos se dibujan. Se pueden quitar o usar si las fotos pasan a un bucket.

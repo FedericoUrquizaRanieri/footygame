@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { BriefingScreen } from "@/components/game/BriefingScreen";
+import { PageStage } from "@/components/ui/PageStage";
 import { SiteHeader } from "@/components/ui/SiteHeader";
 import { challengeDateFor } from "@/domain/daily-date";
 import { hasLocale, type Locale } from "@/i18n/config";
@@ -19,13 +20,13 @@ export default async function DailyPage({ params }: PageProps<"/[locale]/daily">
   if (!hasLocale(locale)) notFound();
 
   return (
-    <>
+    <PageStage zone="box">
       <SiteHeader locale={locale as Locale} />
       <main id="main" className="container">
         <Suspense fallback={null}>
           <Briefing />
         </Suspense>
       </main>
-    </>
+    </PageStage>
   );
 }

@@ -82,6 +82,14 @@ def main() -> int:
     ).fetchall():
         players_src.setdefault(r[0], (r[1], r[2]))
 
+    # Datos fijos de la ficha (figurita): nacionalidad y posición. Los jugadores sin ficha quedan en null.
+    profiles = {
+        r[0]: (r[1], None if r[2] in (None, "Missing") else r[2])
+        for r in con.execute(
+            "select player_id, country_of_citizenship, position from players"
+        ).fetchall()
+    }
+
     club_seasons = {}
     edges = []
     squad = defaultdict(set)
@@ -134,7 +142,13 @@ def main() -> int:
         {"id": c[0], "name": c[1], "country": c[2], "league": c[3]} for c in clubs if c[0] in used_clubs
     ])
     dump("players.jsonl", [
-        {"id": pid, "name": players_src[pid][0].strip(), "market_value_eur": players_src[pid][1]}
+        {
+            "id": pid,
+            "name": players_src[pid][0].strip(),
+            "market_value_eur": players_src[pid][1],
+            "nationality": profiles.get(pid, (None, None))[0],
+            "position": profiles.get(pid, (None, None))[1],
+        }
         for pid in sorted(player_cs)
     ])
     dump("club_seasons.jsonl", [

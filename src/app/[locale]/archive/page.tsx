@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
 import { ArchiveList } from "@/components/game/ArchiveList";
+import { PageStage } from "@/components/ui/PageStage";
 import { SiteHeader } from "@/components/ui/SiteHeader";
 import { challengeDateFor } from "@/domain/daily-date";
 import { hasLocale } from "@/i18n/config";
@@ -21,13 +22,13 @@ export default async function ArchivePage({ params }: PageProps<"/[locale]/archi
   if (!hasLocale(locale)) notFound();
 
   return (
-    <>
+    <PageStage zone="corner">
       <SiteHeader locale={locale} />
       <main id="main" className="container">
         <Suspense fallback={null}>
           <Archive />
         </Suspense>
       </main>
-    </>
+    </PageStage>
   );
 }

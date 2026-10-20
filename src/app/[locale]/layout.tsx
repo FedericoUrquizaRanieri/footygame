@@ -1,22 +1,16 @@
 import type { Metadata } from "next";
-import { Big_Shoulders, Hanken_Grotesk } from "next/font/google";
+import { Archivo } from "next/font/google";
 import { defaultLocale, hasLocale, locales } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
 import { I18nProvider } from "@/i18n/provider";
 import { createT } from "@/i18n/translate";
 import "../globals.css";
 
-const display = Big_Shoulders({
+// Una sola familia variable: el eje de ancho (wdth) da la voz condensada de los títulos y el cuerpo normal.
+const archivo = Archivo({
   subsets: ["latin", "latin-ext"],
-  axes: ["opsz"],
-  variable: "--font-display-src",
-  display: "swap",
-  adjustFontFallback: false,
-});
-
-const ui = Hanken_Grotesk({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-ui-src",
+  axes: ["wdth"],
+  variable: "--font-archivo",
   display: "swap",
 });
 
@@ -39,7 +33,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[lo
   const t = createT(messages);
 
   return (
-    <html lang={locale} className={`${display.variable} ${ui.variable}`}>
+    <html lang={locale} className={archivo.variable}>
       <body>
         <a className="skip-link" href="#main">
           {t("nav.skip")}

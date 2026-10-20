@@ -57,9 +57,15 @@ describe.skipIf(!hasDb)("GET /api/nodes (integración)", () => {
   it("solo devuelve el siguiente paso: campos mínimos, sin datos internos", async () => {
     const body = await (await player(String(MESSI))).json();
     expect(Object.keys(body).sort()).toEqual(["items", "player"]);
-    expect(Object.keys(body.items[0]).sort()).toEqual(["clubName", "id", "seasonLabel"]);
+    expect(Object.keys(body.items[0]).sort()).toEqual(["clubName", "id", "league", "seasonLabel"]);
     const club = await (await clubSeason(String(PSG_2021))).json();
-    expect(Object.keys(club.items[0]).sort()).toEqual(["id", "name"]);
+    expect(Object.keys(club.items[0]).sort()).toEqual([
+      "id",
+      "marketValueEur",
+      "name",
+      "nationality",
+      "position",
+    ]);
   });
 
   it("es cacheable por CDN", async () => {

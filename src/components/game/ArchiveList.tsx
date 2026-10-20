@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { useI18n } from "@/i18n/provider";
 import type { TodaysChallenge } from "@/lib/challenge-types";
 import { readArchiveStatuses } from "@/lib/game-store";
@@ -64,11 +64,15 @@ export function ArchiveList({ challenges }: { challenges: TodaysChallenge[] }) {
         </div>
       ) : (
         <ul className={s.archiveList}>
-          {challenges.map((c) => {
+          {challenges.map((c, i) => {
             const status = statuses[c.date] ?? "new";
             return (
               <li key={c.id}>
-                <Link className={s.archiveRow} href={`/${locale}/archive/${c.date}`}>
+                <Link
+                  className={s.archiveRow}
+                  href={`/${locale}/archive/${c.date}`}
+                  style={{ "--i": i } as CSSProperties}
+                >
                   <span className={s.archiveDate}>{shortDate(c.date, locale)}</span>
                   <span className={s.archiveRoute}>
                     {t("archive.route", { from: c.origin.name, to: c.destination.name })}

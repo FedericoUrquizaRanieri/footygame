@@ -22,3 +22,16 @@ export function formatChallengeDate(date: string, locale: string): string {
     new Date(Date.UTC(y, m - 1, d)),
   );
 }
+
+/** Desde este valor de mercado la figurita sale "brillante" (las estrellas del plantel). */
+export const FOIL_VALUE_EUR = 50_000_000;
+
+/** 30_000_000 -> "€30 M"; 4_500_000 -> "€4,5 M"; 800_000 -> "€800 K". */
+export function formatMarketValue(eur: number, locale: string): string {
+  if (eur >= 1_000_000) {
+    const millions = eur / 1_000_000;
+    const n = new Intl.NumberFormat(locale, { maximumFractionDigits: millions >= 10 ? 0 : 1 });
+    return `€${n.format(millions)} M`;
+  }
+  return `€${Math.max(1, Math.round(eur / 1000))} K`;
+}

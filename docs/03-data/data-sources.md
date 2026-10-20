@@ -42,4 +42,6 @@ Las aristas se definen por **integrar el plantel**, sin importar minutos. Un dat
 ## Imágenes y derechos
 - Fotos de jugadores y escudos tienen derechos de imagen y marcas registradas.
 - No hacer hotlinking a sitios de terceros.
-- **v1: placeholders** (iniciales, camiseta genérica). Fuente real de imágenes queda para después.
+- **Fotos de jugadores**: `npm run data:photos` ([fetch-photos.ts](../../scripts/pipeline/fetch-photos.ts)) cruza el id de Transfermarkt (P2446) con Wikidata, toma la imagen (P18), verifica en Commons que la licencia sea libre (CC BY, CC BY-SA, CC0, dominio público; se descartan NC/ND), descarga una miniatura de 256 px a `public/players/` y escribe la atribución en `src/lib/player-photo-credits.generated.json` y los ids con foto en `src/lib/player-photos.generated.ts`. Es reanudable. Las imágenes no se versionan (se regeneran); para publicar hay que correr el script antes de construir o subirlas a un bucket.
+- **Escudos**: no se usan escudos reales (son marcas registradas). Se dibujan escudos ilustrativos con los colores de camiseta de cada club ([club-colors.ts](../../src/lib/club-colors.ts)); un club nuevo en la base necesita una línea en esa tabla.
+- Jugadores sin foto libre: monograma con iniciales.

@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { Monogram } from "@/components/ui/Monogram";
+import { Sticker } from "@/components/ui/Sticker";
 import { Shield } from "@/components/ui/Shield";
 import type { NodeRef } from "@/domain/types";
 import { clubIdOf } from "@/lib/steps";
@@ -20,7 +20,7 @@ export const NodeHeader = forwardRef<HTMLDivElement, NodeHeaderProps>(function N
   return (
     <div className={s.current}>
       {node.type === "player" ? (
-        <Monogram id={node.id} name={title} size="5.5rem" />
+        <Sticker id={node.id} name={title} size="sm" hideName />
       ) : (
         <Shield id={clubIdOf(node.id)} name={title} size="5rem" />
       )}

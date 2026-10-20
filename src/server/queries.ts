@@ -83,9 +83,23 @@ export interface ClubSeasonItem {
   seasonLabel: string;
 }
 
+/** Club-temporada que se ofrece desde un jugador; suma la liga para el dato de la figurita del club. */
+export interface PlayerStepItem extends ClubSeasonItem {
+  league: string;
+}
+
+/** Jugador del plantel; valor de mercado, nacionalidad y posición son los datos de su figurita. */
+export interface SquadMember extends PlayerSummary {
+  marketValueEur: number | null;
+  /** País en inglés, como lo trae Transfermarkt (ver src/lib/nationalities.ts). Puede faltar. */
+  nationality: string | null;
+  /** "Goalkeeper" | "Defender" | "Midfield" | "Attack". Puede faltar. */
+  position: string | null;
+}
+
 export interface PlayerStep {
   player: PlayerSummary;
-  items: ClubSeasonItem[];
+  items: PlayerStepItem[];
 }
 
 /** Siguiente paso desde un jugador: sus club-temporadas, las más recientes primero. */
@@ -94,7 +108,7 @@ export async function getPlayerStep(playerId: number): Promise<PlayerStep | null
   const [player, items] = await Promise.all([
     pool.query("select id, name from players where id = $1", [playerId]),
     pool.query(
-      `select cs.id, c.name as club_name, cs.label
+      `select cs.id, c.name as club_name, cs.label, c.league
          from player_club_seasons e
          join club_seasons cs on cs.id = e.club_season_id
          join clubs c on c.id = cs.club_id
@@ -106,13 +120,18 @@ export async function getPlayerStep(playerId: number): Promise<PlayerStep | null
   if (player.rows.length === 0) return null;
   return {
     player: player.rows[0],
-    items: items.rows.map((r) => ({ id: r.id, clubName: r.club_name, seasonLabel: r.label })),
+    items: items.rows.map((r) => ({
+      id: r.id,
+      clubName: r.club_name,
+      seasonLabel: r.label,
+      league: r.league,
+    })),
   };
 }
 
 export interface ClubSeasonStep {
   clubSeason: ClubSeasonItem;
-  items: PlayerSummary[];
+  items: SquadMember[];
 }
 
 /** Siguiente paso desde un club-temporada: el plantel, con los más conocidos primero. */
@@ -125,7 +144,7 @@ export async function getClubSeasonStep(clubSeasonId: number): Promise<ClubSeaso
       [clubSeasonId],
     ),
     pool.query(
-      `select p.id, p.name
+      `select p.id, p.name, p.market_value_eur, p.nationality, p.position
          from player_club_seasons e join players p on p.id = e.player_id
         where e.club_season_id = $1
         order by p.market_value_eur desc nulls last, p.name_search`,
@@ -136,7 +155,14 @@ export async function getClubSeasonStep(clubSeasonId: number): Promise<ClubSeaso
   if (!r) return null;
   return {
     clubSeason: { id: r.id, clubName: r.club_name, seasonLabel: r.label },
-    items: items.rows,
+    items: items.rows.map((p) => ({
+      id: p.id,
+      name: p.name,
+      // bigint llega como texto; los valores de mercado caben de sobra en un número.
+      marketValueEur: p.market_value_eur === null ? null : Number(p.market_value_eur),
+      nationality: p.nationality,
+      position: p.position,
+    })),
   };
 }
 
@@ -206,4 +232,13 @@ export async function getOptimalPathLabeled(challengeId: number): Promise<Labele
     id: n.id,
     label: (n.type === "player" ? pName.get(n.id) : cName.get(n.id)) ?? String(n.id),
   }));
+}
+
+/** Nombres de jugadores por id (para la página de créditos). */
+export async function getPlayerNames(ids: number[]): Promise<Map<number, string>> {
+  const { rows } = await getPool().query(
+    "select id, name from players where id = any($1::bigint[])",
+    [ids],
+  );
+  return new Map(rows.map((r) => [Number(r.id), r.name as string]));
 }

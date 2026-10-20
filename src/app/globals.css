@@ -1,4 +1,4 @@
-/* Tokens de diseño: "pizarra de tiza sobre césped". Ver docs/04-ux/design-system.md */
+/* Tokens de diseño: "la cancha de noche, vista desde la tribuna". Ver docs/04-ux/design-system.md */
 :root {
   --grass: #0f3b28;
   --grass-stripe: #15492f;
@@ -12,14 +12,19 @@
   --card-red: #e5412d;
   --red-text: #ff8a78;
   --sky: #8ad4f5;
+  --night: #061a13;
+  --floodlight: rgba(255, 238, 186, 0.2);
+  --led: #ffb347;
 
   --focus: var(--sky);
 
   --r: 14px;
   --r-sm: 10px;
 
-  --font-display: var(--font-display-src), "Arial Narrow", "Roboto Condensed", sans-serif;
-  --font-ui: var(--font-ui-src), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-archivo), "Arial Narrow", "Roboto Condensed", sans-serif;
+  --font-ui: var(--font-archivo), system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Ancho (wdth) de los títulos: condensado, como los nombres en una camiseta. */
+  --display-stretch: 68%;
 
   --maxw: 1120px;
   --gutter: 1rem;
@@ -126,14 +131,23 @@ svg {
   top: 1rem;
 }
 
-/* Césped con franjas de corte. Bajo contraste a propósito: es superficie, no decoración. */
+/* Césped: franjas de corte, grano de pasto y luz de reflectores. Es superficie, no decoración. */
 .pitch {
+  --stripe: clamp(3rem, 9vw, 7rem);
   background-color: var(--grass);
-  background-image: repeating-linear-gradient(
-    90deg,
-    transparent 0 clamp(3rem, 9vw, 7rem),
-    var(--grass-stripe) clamp(3rem, 9vw, 7rem) calc(2 * clamp(3rem, 9vw, 7rem))
-  );
+  background-image:
+    radial-gradient(ellipse 80% 55% at 50% -8%, var(--floodlight), transparent 70%),
+    radial-gradient(
+      circle 24rem at var(--mx, 50%) var(--my, 30%),
+      rgba(255, 238, 186, 0.09),
+      transparent
+    ),
+    url("/textures/grain.png"),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 var(--stripe),
+      var(--grass-stripe) var(--stripe) calc(2 * var(--stripe))
+    );
 }
 
 /* Botones: una forma, dos pesos. */
@@ -147,6 +161,7 @@ svg {
   border: 0;
   border-radius: var(--r);
   font-family: var(--font-display);
+  font-stretch: var(--display-stretch);
   font-size: 1.55rem;
   font-weight: 800;
   line-height: 1;
@@ -163,13 +178,30 @@ svg {
   transform: translateY(1px);
 }
 
+/* La acción principal es una tarjeta amarilla: esquinas casi rectas, sombra dura y un leve giro. */
 .btn-primary {
+  border-radius: 6px;
   background: var(--card-yellow);
   color: var(--ink);
+  box-shadow: 0 4px 0 #b88f00;
+  rotate: -1.2deg;
+  transition:
+    transform 140ms ease,
+    rotate 140ms ease,
+    box-shadow 140ms ease,
+    background-color 120ms ease;
 }
 
 .btn-primary:hover {
   background: #ffdc5c;
+  rotate: 0deg;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #b88f00;
+}
+
+.btn-primary:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #b88f00;
 }
 
 .btn-ghost {

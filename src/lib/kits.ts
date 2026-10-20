@@ -3,7 +3,7 @@ export interface Kit {
   fg: string;
 }
 
-/** Colores de camiseta para monogramas y escudos de reemplazo (la v1 no usa fotos ni escudos reales). */
+/** Colores de camiseta deterministas para monogramas (jugadores sin foto) y para clubes que no están en club-colors.ts. */
 const KITS: readonly Kit[] = [
   { bg: "#c8372d", fg: "#f1f3ec" },
   { bg: "#1f5fa8", fg: "#f1f3ec" },
