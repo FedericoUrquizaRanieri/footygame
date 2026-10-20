@@ -47,11 +47,12 @@ function runs(sortedDates: string[]): { end: string; length: number }[] {
   return out;
 }
 
-/** Estadísticas del desafío diario. `today` es la fecha de hoy en Buenos Aires. */
+/** Estadísticas del desafío diario normal (el difícil todavía no cuenta). `today` es la fecha de hoy en Buenos Aires. */
 export function computeStats(history: readonly HistoryEntry[], today: string): Stats {
-  // Solo el diario cuenta; si una fecha aparece dos veces, vale la última.
+  // Solo el diario normal cuenta; si una fecha aparece dos veces, vale la última.
   const byDate = new Map<string, HistoryEntry>();
-  for (const e of history) if (e.mode === "daily") byDate.set(e.date, e);
+  for (const e of history)
+    if (e.mode === "daily" && e.difficulty === "normal") byDate.set(e.date, e);
   const daily = [...byDate.values()];
 
   const wins = daily.filter((e) => e.result === "won");
