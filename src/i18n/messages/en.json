@@ -27,7 +27,7 @@
     "rule1": "You get 20 jumps at most. Every pick counts as one jump.",
     "rule2": "The clock starts with Start and never stops.",
     "rule3": "To go back, pick the previous node again. That also counts as a jump.",
-    "rule4": "There is one challenge per day, the same for everyone.",
+    "rule4": "There are two challenges per day, one normal and one hard, the same for everyone.",
     "dataTitle": "Where the data comes from",
     "dataText": "Squads from 10 leagues: Premier League, LaLiga, Serie A, Bundesliga, Ligue 1, Argentina, Brazil, Portugal, Netherlands and MLS. They cover 2012/13 to 2025/26, except Argentina, Brazil and MLS, which only have 2024 and 2025.",
     "footer": "Independent project, not affiliated with any club, league or player. Open data derived from Transfermarkt (CC0 license). Player photos come from Wikimedia Commons under free licenses (see credits); club crests are original illustrations, not official.",
@@ -47,7 +47,9 @@
     "continueTitle": "You have a game in progress",
     "continue": "Keep playing",
     "loadError": "We couldn't load your saved game.",
-    "back": "Back to home"
+    "back": "Back to home",
+    "hubTitle": "Today's challenges",
+    "otherChallenge": "See today's other challenge"
   },
   "play": {
     "youAreAt": "You are at",
@@ -106,13 +108,16 @@
     "nextIn": "The next challenge arrives in {time}",
     "gaveUpTitle": "You gave up",
     "gaveUpLead": "This is how to reach {to}.",
-    "streak": "Streak: {days} in a row"
+    "streak": "Streak: {days} in a row",
+    "optimalPaths": "All {count} shortest paths",
+    "morePaths": "and {count} more"
   },
   "difficulty": {
     "label": "Difficulty",
-    "easy": "Easy",
-    "medium": "Medium",
-    "hard": "Hard"
+    "normal": "Normal",
+    "hard": "Hard",
+    "normalHint": "Well-known players",
+    "hardHint": "Less known, with a bridge"
   },
   "common": {
     "loading": "Loading",

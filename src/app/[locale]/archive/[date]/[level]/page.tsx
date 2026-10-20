@@ -5,18 +5,19 @@ import { BriefingScreen } from "@/components/game/BriefingScreen";
 import { PageStage } from "@/components/ui/PageStage";
 import { SiteHeader } from "@/components/ui/SiteHeader";
 import { challengeDateFor, isArchiveDate } from "@/domain/daily-date";
+import { isDifficulty } from "@/domain/difficulty";
 import { hasLocale } from "@/i18n/config";
 import { getChallengeForDate } from "@/server/queries";
 
-type Params = PageProps<"/[locale]/archive/[date]">["params"];
+type Params = PageProps<"/[locale]/archive/[date]/[level]">["params"];
 
 /** Pantalla previa de un desafío pasado. Hoy y el futuro no se pueden jugar por acá. */
 async function ArchiveBriefing({ params }: { params: Params }) {
-  const { locale, date } = await params;
-  if (!hasLocale(locale)) notFound();
+  const { locale, date, level } = await params;
+  if (!hasLocale(locale) || !isDifficulty(level)) notFound();
   await connection();
   if (!isArchiveDate(date, challengeDateFor(new Date()))) notFound();
-  const challenge = await getChallengeForDate(date).catch(() => null);
+  const challenge = await getChallengeForDate(date, level).catch(() => null);
   if (!challenge) notFound();
 
   return (
@@ -29,7 +30,9 @@ async function ArchiveBriefing({ params }: { params: Params }) {
   );
 }
 
-export default function ArchiveBriefingPage({ params }: PageProps<"/[locale]/archive/[date]">) {
+export default function ArchiveBriefingPage({
+  params,
+}: PageProps<"/[locale]/archive/[date]/[level]">) {
   return (
     <Suspense fallback={null}>
       <ArchiveBriefing params={params} />

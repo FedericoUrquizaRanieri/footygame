@@ -68,11 +68,6 @@ export function ResultDialog({
     label: labels[nodeKey(n)] ?? String(n.id),
   }));
 
-  const samePath =
-    result !== null &&
-    result.optimal.path.length === yourPath.length &&
-    result.optimal.path.every((n, i) => n.type === yourPath[i].type && n.id === yourPath[i].id);
-
   return (
     <dialog
       ref={ref}
@@ -147,10 +142,35 @@ export function ResultDialog({
             <h3 className={s.pathTitle}>{t("result.yourPath")}</h3>
             <PathChain nodes={yourPath} label={t("result.yourPath")} />
           </div>
-          {result && !samePath && (
+          {result && (
             <div>
-              <h3 className={s.pathTitle}>{t("result.optimalPath")}</h3>
-              <PathChain nodes={result.optimal.path} label={t("result.optimalPath")} />
+              <h3 className={s.pathTitle}>
+                {result.optimal.pathsCount === 1
+                  ? t("result.optimalPath")
+                  : t("result.optimalPaths", { count: result.optimal.pathsCount })}
+              </h3>
+              {result.optimal.paths.length > 0 && (
+                <p className={s.routeEnds}>
+                  {result.optimal.paths[0][0].label} → … → {result.optimal.paths[0].at(-1)!.label}
+                </p>
+              )}
+              <ol className={s.routeList}>
+                {result.optimal.paths.map((path, i) => (
+                  <li key={i} className={s.routeItem}>
+                    {path
+                      .slice(1, -1)
+                      .map((n) => n.label)
+                      .join(" → ")}
+                  </li>
+                ))}
+              </ol>
+              {result.optimal.pathsCount > result.optimal.paths.length && (
+                <p className={s.statusLine}>
+                  {t("result.morePaths", {
+                    count: result.optimal.pathsCount - result.optimal.paths.length,
+                  })}
+                </p>
+              )}
             </div>
           )}
         </div>

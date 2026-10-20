@@ -8,7 +8,8 @@ import { challengeDateFor } from "@/domain/daily-date";
 import { hasLocale } from "@/i18n/config";
 import { getArchiveList } from "@/server/queries";
 
-const LIMIT = 60;
+/** Dos desafíos por día (normal y difícil): 120 filas son 60 días. */
+const LIMIT = 120;
 
 /** Desafíos anteriores a hoy: solo origen, destino y nivel; la solución nunca sale de acá. */
 async function Archive() {
