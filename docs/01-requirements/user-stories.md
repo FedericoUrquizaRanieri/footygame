@@ -54,8 +54,9 @@ Como jugador quiero que recargar no me haga perder el progreso.
 - La barra de tiempo y saltos sigue visible sin tapar las tarjetas.
 
 ## HU-11 Saber qué tan difícil es
-- Antes de empezar veo el nivel del desafío (fácil, media o difícil).
-- El nivel coincide con el patrón semanal y con el puntaje calculado al generar el desafío.
+- Cada día hay un desafío normal y uno difícil, y elijo cuál jugar.
+- Antes de empezar veo el nivel del desafío (normal o difícil).
+- Al terminar veo todos los caminos más cortos.
 
 ## HU-12 Rendirme
 - Después de Empezar puedo rendirme; la app me pide confirmación.

@@ -28,7 +28,7 @@
 - No hay ranking en la v1; el resumen es solo personal.
 
 ## Desafío diario
-- Un desafío por día, el mismo para todos.
+- **Dos desafíos por día**, uno normal y uno difícil, iguales para todos. Se elige cuál jugar en la pantalla de desafíos de hoy; cada uno se juega una vez por navegador.
 - Cambio de día según zona horaria **America/Argentina/Buenos_Aires**.
 - Si una partida queda abierta y cambia el día, se cierra como **derrota** del desafío anterior.
 - Un intento por día por navegador. Es posible reintentar borrando el almacenamiento local y se acepta como riesgo en la v1.
@@ -39,17 +39,18 @@ Ver [challenge-generation](../03-data/challenge-generation.md).
 ## Mejoras de juego (v1.1)
 Decisiones tomadas el 2026-10-10 al pasar a las mejoras de juego. Todas son **[PROPUESTO]** hasta que el dueño las confirme probándolas.
 
-### Dificultad
-- Cada desafío tiene un nivel: **fácil**, **media** o **difícil**, visible antes de empezar.
-- Se calcula con un puntaje: camino más largo suma; pocos caminos óptimos suman; jugadores menos conocidos suman; muchos caminos óptimos y jugadores muy conocidos restan. Detalle en [challenge-generation](../03-data/challenge-generation.md).
-- El nivel sigue un patrón semanal: lunes y martes fácil, miércoles y jueves media, viernes y sábado difícil, domingo media.
+### Dificultad (rediseñada el 2026-10-19)
+- Cada día hay un desafío **normal** y uno **difícil**, visible antes de empezar.
+- Normal: jugadores muy conocidos, 4 saltos (un solo intermedio) y de 2 a 5 caminos más cortos, con un intermedio conocido.
+- Difícil: jugadores menos conocidos, 4 o 6 saltos y de 1 a 8 caminos, siempre con un puente muy conocido para que se pueda resolver.
+- Al terminar se muestran **todos** los caminos más cortos. Detalle y razones en [challenge-generation](../03-data/challenge-generation.md).
 
 ### Rendirse
 - Después de Empezar se puede **rendirse** (con confirmación).
 - Cuenta como derrota: termina la partida, corta la racha y muestra el camino más corto.
 
 ### Racha y estadísticas
-- Solo cuenta el **desafío diario**. Racha = días seguidos **ganados**; perder o no jugar un día la corta. Si hoy todavía no se jugó, la racha sigue viva hasta que termine el día.
+- Solo cuenta el **desafío diario normal** (el difícil todavía no cuenta; queda para más adelante). Racha = días seguidos **ganados**; perder o no jugar un día la corta. Si hoy todavía no se jugó, la racha sigue viva hasta que termine el día.
 - Estadísticas personales: partidas, victorias, racha actual y mejor racha, mejor tiempo, saltos promedio y cuántas veces se resolvió por el camino más corto.
 - Se guardan solo en el navegador (sin cuentas): si se borra el almacenamiento, se pierden.
 
