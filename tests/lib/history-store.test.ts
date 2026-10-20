@@ -17,7 +17,7 @@ const base: HistoryEntry = {
   jumps: 4,
   elapsedMs: 61_000,
   optimalLength: 4,
-  difficulty: "easy",
+  difficulty: "normal",
   mode: "daily",
 };
 
@@ -67,6 +67,21 @@ describe("recordResult / readHistory", () => {
     const history = readHistory();
     expect(history).toHaveLength(1);
     expect(history[0].jumps).toBe(6);
+  });
+
+  it("cada nivel de la misma fecha se guarda aparte", () => {
+    recordResult(base);
+    recordResult({ ...base, difficulty: "hard", challengeId: 2 });
+    expect(readHistory()).toHaveLength(2);
+  });
+
+  it("los niveles viejos se leen como normal (fácil y media) o difícil", () => {
+    const raw = JSON.stringify([
+      { ...base, difficulty: "easy", date: "2026-10-01" },
+      { ...base, difficulty: "medium", date: "2026-10-02" },
+      { ...base, difficulty: "hard", date: "2026-10-03" },
+    ]);
+    expect(parseHistory(raw).map((e) => e.difficulty)).toEqual(["normal", "normal", "hard"]);
   });
 
   it("el diario y la práctica de la misma fecha conviven", () => {

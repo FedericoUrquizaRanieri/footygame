@@ -1,3 +1,4 @@
+import { difficultyFromLegacy } from "@/domain/difficulty";
 import type { GameState } from "@/domain/game";
 import type { HistoryEntry } from "@/domain/stats";
 import type { FinishResult } from "./api-client";
@@ -6,8 +7,6 @@ const HISTORY_KEY = "footygame:v1:history";
 
 /** Tope de partidas guardadas (más de un año de desafíos diarios). */
 export const MAX_HISTORY = 400;
-
-const DIFFICULTIES = ["easy", "medium", "hard"];
 
 function isEntry(v: unknown): v is HistoryEntry {
   if (typeof v !== "object" || v === null) return false;
@@ -22,8 +21,7 @@ function isEntry(v: unknown): v is HistoryEntry {
     typeof e.elapsedMs === "number" &&
     Number.isFinite(e.elapsedMs) &&
     Number.isInteger(e.optimalLength) &&
-    typeof e.difficulty === "string" &&
-    DIFFICULTIES.includes(e.difficulty) &&
+    difficultyFromLegacy(e.difficulty) !== null &&
     (e.mode === "daily" || e.mode === "archive")
   );
 }
@@ -33,7 +31,10 @@ export function parseHistory(raw: string | null): HistoryEntry[] {
   if (!raw) return [];
   try {
     const data: unknown = JSON.parse(raw);
-    return Array.isArray(data) ? data.filter(isEntry) : [];
+    // Los niveles viejos (fácil, media) se leen como "normal".
+    return Array.isArray(data)
+      ? data.filter(isEntry).map((e) => ({ ...e, difficulty: difficultyFromLegacy(e.difficulty)! }))
+      : [];
   } catch {
     return [];
   }
@@ -55,9 +56,11 @@ export function readHistory(): HistoryEntry[] {
   }
 }
 
-/** Guarda una partida terminada. Es idempotente: la misma fecha y modo se reemplaza. */
+/** Guarda una partida terminada. Es idempotente: la misma fecha, modo y nivel se reemplaza. */
 export function recordResult(entry: HistoryEntry): void {
-  const rest = readHistory().filter((e) => !(e.date === entry.date && e.mode === entry.mode));
+  const rest = readHistory().filter(
+    (e) => !(e.date === entry.date && e.mode === entry.mode && e.difficulty === entry.difficulty),
+  );
   const next = [...rest, entry].sort((a, b) => a.date.localeCompare(b.date)).slice(-MAX_HISTORY);
   try {
     storage()?.setItem(HISTORY_KEY, JSON.stringify(next));
