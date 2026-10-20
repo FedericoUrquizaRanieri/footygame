@@ -14,45 +14,51 @@ export interface ChallengeWithSolution {
 
 const DATE_SQL = "to_char(c.date, 'YYYY-MM-DD')";
 
-export async function getChallengeForDate(date: string): Promise<TodaysChallenge | null> {
-  const { rows } = await getPool().query(
-    `select c.id, ${DATE_SQL} as date, c.difficulty, o.id as o_id, o.name as o_name, d.id as d_id, d.name as d_name
+const CHALLENGE_SELECT = `select c.id, ${DATE_SQL} as date, c.difficulty, o.id as o_id, o.name as o_name, d.id as d_id, d.name as d_name
        from challenges c
        join players o on o.id = c.origin_player_id
-       join players d on d.id = c.destination_player_id
-      where c.date = $1::date`,
-    [date],
-  );
-  const r = rows[0];
-  if (!r) return null;
+       join players d on d.id = c.destination_player_id`;
+
+function toChallenge(r: Record<string, unknown>): TodaysChallenge {
   return {
-    id: r.id,
-    date: r.date,
-    origin: { id: r.o_id, name: r.o_name },
-    destination: { id: r.d_id, name: r.d_name },
-    difficulty: r.difficulty,
+    id: r.id as number,
+    date: r.date as string,
+    origin: { id: r.o_id as number, name: r.o_name as string },
+    destination: { id: r.d_id as number, name: r.d_name as string },
+    difficulty: r.difficulty as Difficulty,
   };
 }
 
-/** Desafíos anteriores a `before` (YYYY-MM-DD), del más reciente al más antiguo. Sin la solución. */
+/** Los desafíos de un día (el normal primero, después el difícil). Solo origen y destino, sin la solución. */
+export async function getChallengesForDate(date: string): Promise<TodaysChallenge[]> {
+  const { rows } = await getPool().query(
+    `${CHALLENGE_SELECT} where c.date = $1::date order by (c.difficulty = 'hard')`,
+    [date],
+  );
+  return rows.map(toChallenge);
+}
+
+/** Un desafío de un día y nivel, o null si no existe. */
+export async function getChallengeForDate(
+  date: string,
+  level: Difficulty = "normal",
+): Promise<TodaysChallenge | null> {
+  const { rows } = await getPool().query(
+    `${CHALLENGE_SELECT} where c.date = $1::date and c.difficulty = $2`,
+    [date, level],
+  );
+  return rows[0] ? toChallenge(rows[0]) : null;
+}
+
+/** Desafíos anteriores a `before` (YYYY-MM-DD), del día más reciente al más antiguo (normal antes que difícil). Sin la solución. */
 export async function getArchiveList(before: string, limit: number): Promise<TodaysChallenge[]> {
   const { rows } = await getPool().query(
-    `select c.id, ${DATE_SQL} as date, c.difficulty, o.id as o_id, o.name as o_name, d.id as d_id, d.name as d_name
-       from challenges c
-       join players o on o.id = c.origin_player_id
-       join players d on d.id = c.destination_player_id
-      where c.date < $1::date
-      order by c.date desc
+    `${CHALLENGE_SELECT} where c.date < $1::date
+      order by c.date desc, (c.difficulty = 'hard')
       limit $2`,
     [before, limit],
   );
-  return rows.map((r) => ({
-    id: r.id,
-    date: r.date,
-    origin: { id: r.o_id, name: r.o_name },
-    destination: { id: r.d_id, name: r.d_name },
-    difficulty: r.difficulty,
-  }));
+  return rows.map(toChallenge);
 }
 
 export async function getChallengeWithSolution(id: number): Promise<ChallengeWithSolution | null> {
@@ -208,15 +214,16 @@ export interface LabeledNode {
   label: string;
 }
 
-/** Camino óptimo del desafío con etiquetas legibles. Solo se llama después de validar el intento. */
-export async function getOptimalPathLabeled(challengeId: number): Promise<LabeledNode[]> {
+/** Todos los caminos más cortos del desafío con etiquetas legibles. Solo se llama después de validar el intento. */
+export async function getOptimalPathsLabeled(challengeId: number): Promise<LabeledNode[][]> {
   const pool = getPool();
-  const { rows } = await pool.query("select optimal_path from challenges where id = $1", [
+  const { rows } = await pool.query("select optimal_paths from challenges where id = $1", [
     challengeId,
   ]);
-  const path = (rows[0]?.optimal_path ?? []) as NodeRef[];
-  const playerIds = path.filter((n) => n.type === "player").map((n) => n.id);
-  const csIds = path.filter((n) => n.type === "club-season").map((n) => n.id);
+  const paths = (rows[0]?.optimal_paths ?? []) as NodeRef[][];
+  const all = paths.flat();
+  const playerIds = [...new Set(all.filter((n) => n.type === "player").map((n) => n.id))];
+  const csIds = [...new Set(all.filter((n) => n.type === "club-season").map((n) => n.id))];
   const [pl, cs] = await Promise.all([
     pool.query("select id, name from players where id = any($1::bigint[])", [playerIds]),
     pool.query(
@@ -225,13 +232,15 @@ export async function getOptimalPathLabeled(challengeId: number): Promise<Labele
       [csIds],
     ),
   ]);
-  const pName = new Map<number, string>(pl.rows.map((r) => [r.id, r.name]));
-  const cName = new Map<number, string>(cs.rows.map((r) => [r.id, r.label]));
-  return path.map((n) => ({
-    type: n.type,
-    id: n.id,
-    label: (n.type === "player" ? pName.get(n.id) : cName.get(n.id)) ?? String(n.id),
-  }));
+  const pName = new Map<number, string>(pl.rows.map((r) => [Number(r.id), r.name]));
+  const cName = new Map<number, string>(cs.rows.map((r) => [Number(r.id), r.label]));
+  return paths.map((path) =>
+    path.map((n) => ({
+      type: n.type,
+      id: n.id,
+      label: (n.type === "player" ? pName.get(n.id) : cName.get(n.id)) ?? String(n.id),
+    })),
+  );
 }
 
 /** Nombres de jugadores por id (para la página de créditos). */
