@@ -12,7 +12,10 @@ const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]"]);
  * se usan pocas conexiones para no agotar el pooler de Supabase. Fuera de localhost la conexión va con SSL
  * (el pooler de Supabase presenta un certificado propio, por eso no se verifica la cadena).
  */
-export function poolConfig(url: string, env: Record<string, string | undefined> = process.env): pg.PoolConfig {
+export function poolConfig(
+  url: string,
+  env: Record<string, string | undefined> = process.env,
+): pg.PoolConfig {
   const local = LOCAL_HOSTS.has(new URL(url).hostname);
   return {
     connectionString: url,

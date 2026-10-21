@@ -5,7 +5,7 @@
  * 1. Baja el paquete a una carpeta temporal con `npm pack` (no se agrega como dependencia).
  * 2. Convierte a PNG las banderas que usa src/lib/nationalities.ts.
  * 3. Copia la licencia a public/flags/LICENSE.
- * public/flags está en .gitignore: se regenera con `npm run data:flags`.
+ * public/flags se versiona (pesa unos pocos KB); se regenera con `npm run data:flags`.
  */
 import { execFileSync } from "node:child_process";
 import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from "node:fs";

@@ -22,7 +22,8 @@
     "data:profiles": "tsx scripts/pipeline/load-profiles.ts",
     "data:challenges": "tsx scripts/pipeline/generate-challenges.ts",
     "data:photos": "tsx scripts/pipeline/fetch-photos.ts",
-    "data:flags": "tsx scripts/pipeline/fetch-flags.ts"
+    "data:flags": "tsx scripts/pipeline/fetch-flags.ts",
+    "data:upload-photos": "tsx scripts/pipeline/upload-photos.ts"
   },
   "dependencies": {
     "next": "16.4.0",

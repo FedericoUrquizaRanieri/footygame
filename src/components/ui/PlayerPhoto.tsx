@@ -19,6 +19,7 @@ export function PlayerPhoto({ id, sizes }: { id: number; sizes: string }) {
       src={src}
       alt=""
       fill
+      unoptimized
       sizes={sizes}
       onError={() => setFailed(true)}
     />

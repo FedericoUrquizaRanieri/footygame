@@ -38,9 +38,12 @@ describe("S-03/S-04 sin secretos en el cliente", () => {
     expect(offenders).toEqual([]);
   });
 
-  it("no se usa el prefijo NEXT_PUBLIC_ (nada de la base debe ir al navegador)", () => {
+  it("no se usa el prefijo NEXT_PUBLIC_ (nada de la base debe ir al navegador), salvo la URL pública de las fotos", () => {
     const files = [...srcFiles, resolve(ROOT, "next.config.ts"), resolve(ROOT, ".env.example")];
-    expect(files.filter((f) => /NEXT_PUBLIC_/.test(withoutComments(f))).map(rel)).toEqual([]);
+    const offenders = files.filter((f) =>
+      /NEXT_PUBLIC_/.test(withoutComments(f).replaceAll("NEXT_PUBLIC_PHOTOS_BASE_URL", "")),
+    );
+    expect(offenders.map(rel)).toEqual([]);
   });
 
   it("los componentes cliente no importan código de servidor ni la librería pg", () => {

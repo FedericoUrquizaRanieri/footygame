@@ -31,7 +31,8 @@ next-env.d.ts
 *.duckdb.wal
 *.csv.gz
 
-# fotos de jugadores descargadas por scripts/pipeline/fetch-photos.ts (se regeneran con npm run data:photos)
+# fotos de jugadores descargadas por scripts/pipeline/fetch-photos.ts (se regeneran con npm run data:photos).
+# En producción se sirven desde Supabase Storage (npm run data:upload-photos).
 /public/players/
 /data/cache/
 
@@ -52,8 +53,6 @@ Thumbs.db
 npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
-
-/public/flags/
 
 # datos de las pruebas con amigos (nombres y respuestas personales); el repo es publico
 /playtest/etiquetado_fama*
