@@ -32,3 +32,4 @@ export function createRateLimiter(options: { limit: number; windowMs: number }):
 export const nodesLimiter = createRateLimiter({ limit: 120, windowMs: 60_000 });
 export const challengeLimiter = createRateLimiter({ limit: 60, windowMs: 60_000 });
 export const finishLimiter = createRateLimiter({ limit: 20, windowMs: 60_000 });
+export const feedbackLimiter = createRateLimiter({ limit: 5, windowMs: 10 * 60_000 });

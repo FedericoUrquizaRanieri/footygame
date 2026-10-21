@@ -69,6 +69,7 @@ describe("S-10 no existen rutas que listen o vuelquen tablas completas", () => {
     expect(routes).toEqual([
       "src/app/api/challenge/finish/route.ts",
       "src/app/api/challenge/today/route.ts",
+      "src/app/api/feedback/route.ts",
       "src/app/api/nodes/club-season/[id]/route.ts",
       "src/app/api/nodes/player/[id]/route.ts",
     ]);

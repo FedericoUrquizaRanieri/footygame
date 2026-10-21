@@ -173,8 +173,7 @@
     "dataTitle": "Data",
     "dataText": "Player and club data derive from an open Transfermarkt dataset published under a CC0 license. Names are used only to identify each person or club.",
     "removalTitle": "Removal requests",
-    "removalText": "If you are a player, a club, a photographer or a rights holder and want us to remove a photo, a name or any other content, let us know and we will take it down promptly.",
-    "contact": "Write to us at:"
+    "removalText": "If you are a player, a club, a photographer or a rights holder and want us to remove a photo, a name or any other content, let us know and we will take it down promptly."
   },
   "sticker": {
     "value": "Value {value}",
@@ -191,5 +190,23 @@
     "Defender": "DEF",
     "Midfield": "MID",
     "Attack": "FWD"
+  },
+  "form": {
+    "feedbackTitle": "Feedback",
+    "feedbackIntro": "Tell us what you thought of the game, what broke or what you would like to see.",
+    "feedbackMessage": "Your message (up to 500 characters)",
+    "feedbackSent": "Thanks! We got your message.",
+    "removalTitle": "Request content removal",
+    "removalIntro": "If you are a player, a club, a photographer or a rights holder, tell us what content you want removed (name, photo or other), where you see it and why. We will review it and take it down without fuss.",
+    "removalMessage": "What content you want removed and why",
+    "removalSent": "We got your request. We will write back to the email you left.",
+    "contactOptional": "Your email (optional, if you want a reply)",
+    "contactRequired": "Your email (required, so we can reply)",
+    "send": "Send",
+    "sending": "Sending…",
+    "error": "We could not send the message. Please try again in a while.",
+    "footerNote": "Feedback, or want content removed?",
+    "footerFeedback": "Leave us a message",
+    "footerRemoval": "Request content removal"
   }
 }

@@ -1,7 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { hasDb, withClient } from "../helpers/db";
 
-const TABLES = ["players", "clubs", "club_seasons", "player_club_seasons", "challenges"];
+const TABLES = [
+  "players",
+  "clubs",
+  "club_seasons",
+  "player_club_seasons",
+  "challenges",
+  "feedback_messages",
+];
 const PRIVILEGES = ["SELECT", "INSERT", "UPDATE", "DELETE", "TRUNCATE", "REFERENCES", "TRIGGER"];
 
 describe.skipIf(!hasDb)("S-01/S-02 la base está cerrada a la API pública", () => {
@@ -75,6 +82,28 @@ describe.skipIf(!hasDb)("S-01/S-02 la base está cerrada a la API pública", () 
       ]) {
         await expect(c.query(sql), sql).rejects.toMatchObject({ code: "42501" });
       }
+    });
+  });
+
+  it("el rol de la app solo puede INSERTAR en feedback_messages (sin leer, editar ni borrar)", async () => {
+    await withClient("TEST_DATABASE_URL", async (c) => {
+      await c.query(
+        "insert into feedback_messages (kind, message, contact, locale) values ('feedback', 'hola', null, 'es')",
+      );
+      for (const sql of [
+        "select * from feedback_messages",
+        "update feedback_messages set message = 'x'",
+        "delete from feedback_messages",
+        "truncate feedback_messages",
+      ]) {
+        await expect(c.query(sql), sql).rejects.toMatchObject({ code: "42501" });
+      }
+      // Un pedido de retiro sin mail de contacto no se acepta.
+      await expect(
+        c.query(
+          "insert into feedback_messages (kind, message, contact, locale) values ('removal', 'x', null, 'es')",
+        ),
+      ).rejects.toMatchObject({ code: "23514" });
     });
   });
 

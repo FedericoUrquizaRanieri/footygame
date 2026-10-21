@@ -1,0 +1,51 @@
+.form {
+  display: grid;
+  gap: 1rem;
+  max-width: 40rem;
+  margin-block: 1rem 1.5rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.field textarea,
+.field input {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  border: 2px solid var(--chalk-dim);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--chalk);
+  font: inherit;
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.tall {
+  min-height: 12rem;
+}
+
+.form button {
+  justify-self: start;
+}
+
+.trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.done {
+  margin-block: 1rem;
+  font-weight: 700;
+}
+
+.error {
+  color: var(--card-yellow);
+}

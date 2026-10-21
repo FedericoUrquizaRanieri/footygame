@@ -173,8 +173,7 @@
     "dataTitle": "Datos",
     "dataText": "Los datos de jugadores y clubes derivan de un conjunto abierto de Transfermarkt publicado con licencia CC0. Los nombres se usan solo para identificar a cada persona o club.",
     "removalTitle": "Pedidos de retiro",
-    "removalText": "Si sos un jugador, un club, un fotógrafo o un titular de derechos y querés que quitemos una foto, un nombre o cualquier otro contenido, avisanos y lo retiramos sin vueltas.",
-    "contact": "Escribinos a:"
+    "removalText": "Si sos un jugador, un club, un fotógrafo o un titular de derechos y querés que quitemos una foto, un nombre o cualquier otro contenido, avisanos y lo retiramos sin vueltas."
   },
   "sticker": {
     "value": "Valor {value}",
@@ -191,5 +190,23 @@
     "Defender": "DEF",
     "Midfield": "MED",
     "Attack": "DEL"
+  },
+  "form": {
+    "feedbackTitle": "Feedback",
+    "feedbackIntro": "Contanos qué te pareció el juego, qué falló o qué te gustaría ver.",
+    "feedbackMessage": "Tu mensaje (hasta 500 caracteres)",
+    "feedbackSent": "¡Gracias! Recibimos tu mensaje.",
+    "removalTitle": "Pedí el retiro de contenido",
+    "removalIntro": "Si sos un jugador, un club, un fotógrafo o un titular de derechos, contanos qué contenido querés que quitemos (nombre, foto u otro), dónde lo ves y por qué. Lo revisamos y lo retiramos sin vueltas.",
+    "removalMessage": "Qué contenido querés retirar y por qué",
+    "removalSent": "Recibimos tu pedido. Te escribiremos al mail que dejaste.",
+    "contactOptional": "Tu mail (opcional, si querés que te respondamos)",
+    "contactRequired": "Tu mail (obligatorio, para responderte)",
+    "send": "Enviar",
+    "sending": "Enviando…",
+    "error": "No pudimos enviar el mensaje. Probá de nuevo en un rato.",
+    "footerNote": "¿Feedback o querés que retiremos contenido?",
+    "footerFeedback": "Dejanos un mensaje",
+    "footerRemoval": "Pedir retiro de contenido"
   }
 }

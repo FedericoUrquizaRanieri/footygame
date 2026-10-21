@@ -1,13 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { FeedbackForm } from "@/components/ui/FeedbackForm";
 import { PageStage } from "@/components/ui/PageStage";
 import { SiteHeader } from "@/components/ui/SiteHeader";
 import { hasLocale } from "@/i18n/config";
 import { getMessages } from "@/i18n/messages";
 import { createT } from "@/i18n/translate";
-
-/** Mail para pedidos de retiro. Se configura con CONTACT_EMAIL; si falta, no se muestra. */
-const CONTACT_EMAIL = process.env.CONTACT_EMAIL;
 
 const SECTIONS = ["purpose", "crests", "photos", "data", "removal"] as const;
 
@@ -26,11 +24,11 @@ export default async function LegalPage({ params }: PageProps<"/[locale]/legal">
             <p>{t(`legal.${key}Text`)}</p>
           </section>
         ))}
-        {CONTACT_EMAIL && (
-          <p>
-            {t("legal.contact")} <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-          </p>
-        )}
+        <section>
+          <h2>{t("form.removalTitle")}</h2>
+          <p>{t("form.removalIntro")}</p>
+          <FeedbackForm kind="removal" />
+        </section>
         <p>
           <Link href={`/${locale}/credits`}>{t("credits.title")}</Link>
         </p>

@@ -144,6 +144,11 @@ export default async function LandingPage({ params }: PageProps<"/[locale]">) {
             <Link href={`/${locale}/credits`}>{t("credits.title")}</Link> ·{" "}
             <Link href={`/${locale}/legal`}>{t("legal.title")}</Link>
           </p>
+          <p>
+            {t("form.footerNote")}{" "}
+            <Link href={`/${locale}/feedback`}>{t("form.footerFeedback")}</Link> ·{" "}
+            <Link href={`/${locale}/legal`}>{t("form.footerRemoval")}</Link>
+          </p>
         </div>
       </footer>
     </>
