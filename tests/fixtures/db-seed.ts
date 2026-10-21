@@ -1,6 +1,7 @@
 import pg from "pg";
-import { analyzeChallenge } from "../../src/domain/challenge";
 import { challengeDateFor } from "../../src/domain/daily-date";
+import type { Difficulty } from "../../src/domain/difficulty";
+import { findOptimalRoutes } from "../../src/domain/optimal-routes";
 import { normalizeText } from "../../src/domain/search";
 import {
   BARCA_2020,
@@ -109,48 +110,31 @@ export async function seedTestDb(adminUrl: string): Promise<void> {
       );
     }
 
-    const { today, tomorrow } = testDates();
-    const todays = analyzeChallenge(miniGraph, MESSI, COPETTI)!;
-    const futures = analyzeChallenge(miniGraph, PEDRI, COPETTI)!;
+    // Dos desafíos por día (normal y difícil). Los datos de prueba no cumplen las reglas de generación.
+    const { today, tomorrow, yesterday, twoDaysAgo } = testDates();
     const insert = `insert into challenges
       (date, origin_player_id, destination_player_id, optimal_length, optimal_paths_count, optimal_path,
-       difficulty, difficulty_score)
-      values ($1::date, $2, $3, $4, $5, $6::jsonb, $7, $8)`;
-    await client.query(insert, [
-      today,
-      MESSI,
-      COPETTI,
-      todays.optimalLength,
-      todays.optimalPathsCount,
-      JSON.stringify(todays.optimalPath),
-      "easy",
-      -2,
-    ]);
-    await client.query(insert, [
-      tomorrow,
-      PEDRI,
-      COPETTI,
-      futures.optimalLength,
-      futures.optimalPathsCount,
-      JSON.stringify(futures.optimalPath),
-      "hard",
-      4,
-    ]);
-    const { yesterday, twoDaysAgo } = testDates();
-    for (const [date, from, level, score] of [
-      [yesterday, NEYMAR, "medium", 1],
-      [twoDaysAgo, MBAPPE, "hard", 3],
-    ] as const) {
-      const analysis = analyzeChallenge(miniGraph, from, COPETTI)!;
+       optimal_paths, difficulty, difficulty_score)
+      values ($1::date, $2, $3, $4, $5, $6::jsonb, $7::jsonb, $8, 0)`;
+    const seeds: [string, Difficulty, number][] = [
+      [today, "normal", MESSI], // Messi -> Copetti: 4 saltos, un camino
+      [today, "hard", PEDRI], // Pedri -> Copetti: 6 saltos, dos caminos
+      [tomorrow, "normal", PEDRI],
+      [yesterday, "normal", NEYMAR],
+      [yesterday, "hard", RONALDO],
+      [twoDaysAgo, "normal", MBAPPE],
+    ];
+    for (const [date, level, from] of seeds) {
+      const found = findOptimalRoutes(miniGraph, from, COPETTI)!;
       await client.query(insert, [
         date,
         from,
         COPETTI,
-        analysis.optimalLength,
-        analysis.optimalPathsCount,
-        JSON.stringify(analysis.optimalPath),
+        found.optimalLength,
+        found.routesCount,
+        JSON.stringify(found.routes[0]),
+        JSON.stringify(found.routes),
         level,
-        score,
       ]);
     }
     await client.query("commit");

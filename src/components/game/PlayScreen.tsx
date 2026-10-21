@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Monogram } from "@/components/ui/Monogram";
 import { currentNode, elapsedMs, giveUp, jumpsOf, selectNode, type GameState } from "@/domain/game";
+import type { Difficulty } from "@/domain/difficulty";
 import { MAX_JUMPS } from "@/domain/types";
 import { useI18n } from "@/i18n/provider";
 import { fetchStep, finishChallenge, type FinishResult } from "@/lib/api-client";
@@ -39,22 +40,24 @@ type Validation = "idle" | "pending" | "error";
 
 /** Pantalla de juego: nodo actual, buscador, opciones, y el marcador con tiempo y saltos. */
 interface PlayScreenProps {
+  /** Nivel del desafío: el normal o el difícil. */
+  level: Difficulty;
   /** "daily": el desafío de hoy. "archive": un desafío pasado, de práctica. */
   mode?: "daily" | "archive";
   /** Fecha del desafío pasado (solo en modo archive). */
   date?: string;
 }
 
-export function PlayScreen({ mode = "daily", date }: PlayScreenProps) {
+export function PlayScreen({ level, mode = "daily", date }: PlayScreenProps) {
   const { locale, t } = useI18n();
   const router = useRouter();
 
   const archive = mode === "archive" && date !== undefined;
   const scope = useMemo<Scope>(
-    () => (mode === "archive" && date !== undefined ? { archive: date } : "daily"),
-    [mode, date],
+    () => (mode === "archive" && date !== undefined ? { archive: date, level } : { daily: level }),
+    [mode, date, level],
   );
-  const base = archive ? `/${locale}/archive/${date}` : `/${locale}/daily`;
+  const base = archive ? `/${locale}/archive/${date}/${level}` : `/${locale}/daily/${level}`;
   const recordMode = archive ? "archive" : "daily";
 
   const [ready, setReady] = useState(false);
@@ -90,7 +93,7 @@ export function PlayScreen({ mode = "daily", date }: PlayScreenProps) {
         });
         writeResult(response, scope);
         recordResult(entryFromResult(g, response, recordMode));
-        if (!archive) {
+        if (!archive && level === "normal") {
           setStreak(computeStats(readHistory(), challengeDateFor(Date.now())).currentStreak);
         }
         setResult(response);
@@ -99,12 +102,12 @@ export function PlayScreen({ mode = "daily", date }: PlayScreenProps) {
         setValidation("error");
       }
     },
-    [scope, recordMode, archive],
+    [scope, recordMode, archive, level],
   );
 
   // Carga la partida guardada. Sin partida iniciada hoy, vuelve a la pantalla previa.
   useEffect(() => {
-    const session = archive && date ? readArchiveSession(date) : readTodaySession();
+    const session = archive && date ? readArchiveSession(date, level) : readTodaySession(level);
     if (!session || session.game.status === "ready") {
       router.replace(base);
       return;
@@ -117,7 +120,7 @@ export function PlayScreen({ mode = "daily", date }: PlayScreenProps) {
     setResult(session.result);
     if (session.result && session.game.status !== "playing") {
       recordResult(entryFromResult(session.game, session.result, recordMode));
-      if (!archive) {
+      if (!archive && level === "normal") {
         setStreak(computeStats(readHistory(), challengeDateFor(Date.now())).currentStreak);
       }
     }
@@ -127,7 +130,7 @@ export function PlayScreen({ mode = "daily", date }: PlayScreenProps) {
       if (!session.result) void runFinish(session.game);
     }
     /* eslint-enable react-hooks/set-state-in-effect */
-  }, [archive, base, date, recordMode, router, runFinish]);
+  }, [archive, base, date, level, recordMode, router, runFinish]);
 
   const node = game ? currentNode(game) : null;
   const nodeId = node ? nodeKey(node) : null;

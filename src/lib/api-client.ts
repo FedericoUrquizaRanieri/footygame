@@ -44,8 +44,9 @@ export interface FinishResult {
   elapsedMs: number;
   optimal: {
     length: number;
+    /** Cuántos caminos más cortos hay en total; `paths` trae hasta 8. */
     pathsCount: number;
-    path: { type: "player" | "club-season"; id: number; label: string }[];
+    paths: { type: "player" | "club-season"; id: number; label: string }[][];
   };
   extraJumps: number;
   isOptimal: boolean;

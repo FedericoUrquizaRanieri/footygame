@@ -4,10 +4,10 @@ Estas rutas **son internas**: las consume solo la UI del propio sitio. No se doc
 
 | Método | Ruta | Respuesta |
 |---|---|---|
-| GET | `/api/challenge/today` | `{ id, date, origin: Player, destination: Player }` |
+| GET | `/api/challenge/today` | `{ date, normal, hard }`; cada uno es `{ id, date, difficulty, origin: Player, destination: Player }` (o `null` si falta) |
 | GET | `/api/nodes/player/:id` | Lista de club-temporadas del jugador: `[{ id, clubName, clubLogo, seasonLabel }]` |
 | GET | `/api/nodes/club-season/:id` | Lista de jugadores del club-temporada: `[{ id, name, photo }]` |
-| POST | `/api/challenge/finish` | Entrada: `{ challengeId, path[], elapsedMs }`. Salida: `{ valid, result, optimalLength, optimalPath[], comment }` |
+| POST | `/api/challenge/finish` | Entrada: `{ challengeId, path[], elapsedMs }`. Salida: `{ valid, result, jumps, optimal: { length, pathsCount, paths[][] }, difficulty, ... }`; `paths` trae hasta 8 caminos más cortos |
 
 ## Reglas
 - Todos los IDs se validan (entero positivo o formato esperado) antes de consultar.

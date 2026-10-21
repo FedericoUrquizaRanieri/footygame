@@ -4,7 +4,7 @@ import { challengeDateFor } from "@/domain/daily-date";
 import { MAX_JUMPS, type NodeRef } from "@/domain/types";
 import { validatePath } from "@/domain/validate-path";
 import { errorResponse, guard, json } from "@/server/http";
-import { getChallengeWithSolution, getPathGraph, getOptimalPathLabeled } from "@/server/queries";
+import { getChallengeWithSolution, getOptimalPathsLabeled, getPathGraph } from "@/server/queries";
 import { finishLimiter } from "@/server/rate-limit";
 
 const nodeSchema = z.object({
@@ -71,7 +71,7 @@ export async function POST(request: Request): Promise<Response> {
     optimal: {
       length: found.optimalLength,
       pathsCount: found.optimalPathsCount,
-      path: await getOptimalPathLabeled(challengeId),
+      paths: await getOptimalPathsLabeled(challengeId),
     },
     extraJumps: comparison.extraJumps,
     isOptimal: comparison.isOptimal,

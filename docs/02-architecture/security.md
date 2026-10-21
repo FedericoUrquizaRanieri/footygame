@@ -22,7 +22,7 @@ Riesgo aceptado: scraping lento y paso a paso. Se vigila con logs.
 3. **Secretos** únicamente en variables de entorno del servidor (sin prefijo `NEXT_PUBLIC_`).
 4. **Rate limiting** por IP (p. ej. 60 req/min en `nodes/*`, más estricto en `finish`).
 5. **Validación de entrada** con esquema (p. ej. zod) en todas las rutas.
-6. **Anti-filtrado de solución**: `optimal_path` jamás en respuestas hasta `finish`.
+6. **Anti-filtrado de solución**: `optimal_path` y `optimal_paths` jamás en respuestas hasta `finish`.
 7. **Cabeceras**: CSP, `X-Content-Type-Options`, `Referrer-Policy`, `frame-ancestors 'none'`.
 8. **Dependencias**: `npm audit` en CI.
 9. **Sin PII**: no hay cuentas ni datos personales. No se guardan IPs en la base (solo en el contador del rate limit con expiración).

@@ -54,3 +54,8 @@ yarn-debug.log*
 pnpm-debug.log*
 
 /public/flags/
+
+# datos de las pruebas con amigos (nombres y respuestas personales); el repo es publico
+/playtest/etiquetado_fama*
+/playtest/planilla_*.md
+/playtest/pool_v0.*

@@ -4,7 +4,7 @@ import type { Difficulty } from "@/domain/difficulty";
 import { useI18n } from "@/i18n/provider";
 import s from "./game.module.css";
 
-const BARS: Record<Difficulty, number> = { easy: 1, medium: 2, hard: 3 };
+const BARS: Record<Difficulty, number> = { normal: 2, hard: 3 };
 
 /** Solo las tres barras (decorativas): una por nivel de dificultad. */
 export function LevelMeter({ difficulty }: { difficulty: Difficulty }) {

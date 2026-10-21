@@ -4,7 +4,15 @@ import { POST as finish } from "@/app/api/challenge/finish/route";
 import { MIN_MS_PER_JUMP } from "@/domain/validate-path";
 import { closePool } from "@/server/db";
 import { hasDb, request, withClient } from "../helpers/db";
-import { COPETTI, DI_MARIA, MESSI, PSG_2021, ROSARIO_2025 } from "../fixtures/mini-graph";
+import {
+  BARCA_2020,
+  COPETTI,
+  DI_MARIA,
+  MESSI,
+  PEDRI,
+  PSG_2021,
+  ROSARIO_2025,
+} from "../fixtures/mini-graph";
 import { testDates } from "../fixtures/db-seed";
 
 afterAll(closePool);
@@ -26,28 +34,68 @@ const post = (body: unknown, init: RequestInit = {}) =>
     }),
   );
 
-async function challengeId(date: string): Promise<number> {
+async function challengeId(date: string, level: "normal" | "hard" = "normal"): Promise<number> {
   return withClient(
     "TEST_DATABASE_URL_ADMIN",
     async (c) =>
-      (await c.query("select id from challenges where date = $1::date", [date])).rows[0].id,
+      (
+        await c.query("select id from challenges where date = $1::date and difficulty = $2", [
+          date,
+          level,
+        ])
+      ).rows[0].id,
   );
 }
 
 describe.skipIf(!hasDb)("GET /api/challenge/today (integración)", () => {
-  it("devuelve origen y destino del día, y nada más", async () => {
+  it("devuelve los dos desafíos del día (normal y difícil) con origen y destino, y nada más", async () => {
     const res = await today(request("/api/challenge/today"));
     expect(res.status).toBe(200);
     const body = await res.json();
-    expect(Object.keys(body).sort()).toEqual(["date", "destination", "difficulty", "id", "origin"]);
+    expect(Object.keys(body).sort()).toEqual(["date", "hard", "normal"]);
     expect(body.date).toBe(testDates().today);
-    expect(body.origin).toEqual({ id: MESSI, name: "Lionel Messi" });
-    expect(body.destination).toEqual({ id: COPETTI, name: "Enzo Copetti" });
+    for (const level of ["normal", "hard"]) {
+      expect(Object.keys(body[level]).sort()).toEqual([
+        "date",
+        "destination",
+        "difficulty",
+        "id",
+        "origin",
+      ]);
+    }
+    expect(body.normal.origin).toEqual({ id: MESSI, name: "Lionel Messi" });
+    expect(body.normal.destination).toEqual({ id: COPETTI, name: "Enzo Copetti" });
+    expect(body.hard.origin.id).toBe(PEDRI);
   });
 
-  it("informa el nivel de dificultad", async () => {
+  it("informa el nivel de cada desafío", async () => {
     const body = await (await today(request("/api/challenge/today"))).json();
-    expect(body.difficulty).toBe("easy");
+    expect(body.normal.difficulty).toBe("normal");
+    expect(body.hard.difficulty).toBe("hard");
+  });
+
+  it("no puede haber dos desafíos del mismo nivel en un día", async () => {
+    await withClient("TEST_DATABASE_URL_ADMIN", async (c) => {
+      await expect(
+        c.query(
+          `insert into challenges (date, origin_player_id, destination_player_id, optimal_length,
+              optimal_paths_count, optimal_path, optimal_paths, difficulty)
+             select date, origin_player_id, destination_player_id, optimal_length,
+              optimal_paths_count, optimal_path, optimal_paths, difficulty
+             from challenges where id = (select min(id) from challenges)`,
+        ),
+      ).rejects.toMatchObject({ code: "23505" });
+    });
+  });
+
+  it("los niveles viejos ya no son válidos", async () => {
+    await withClient("TEST_DATABASE_URL_ADMIN", async (c) => {
+      await expect(
+        c.query(
+          "update challenges set difficulty = 'easy' where id = (select min(id) from challenges)",
+        ),
+      ).rejects.toMatchObject({ code: "23514" });
+    });
   });
 
   it("la base solo acepta niveles válidos", async () => {
@@ -82,16 +130,39 @@ describe.skipIf(!hasDb)("POST /api/challenge/finish (integración)", () => {
       jumps: 4,
       extraJumps: 0,
       isOptimal: true,
-      difficulty: "easy",
+      difficulty: "normal",
     });
     expect(body.optimal.length).toBe(4);
-    expect(body.optimal.path.map((n: { label: string }) => n.label)).toEqual([
+    expect(body.optimal.pathsCount).toBe(1);
+    expect(body.optimal.paths).toHaveLength(1);
+    expect(body.optimal.paths[0].map((n: { label: string }) => n.label)).toEqual([
       "Lionel Messi",
       "Paris Saint-Germain 2021/22",
       "Ángel Di María",
       "Rosario Central 2025",
       "Enzo Copetti",
     ]);
+  });
+
+  it("el difícil devuelve todos los caminos más cortos", async () => {
+    const id = await challengeId(testDates().today, "hard");
+    const path = [
+      { type: "player", id: PEDRI },
+      { type: "club-season", id: BARCA_2020 },
+      { type: "player", id: MESSI },
+      { type: "club-season", id: PSG_2021 },
+      { type: "player", id: DI_MARIA },
+      { type: "club-season", id: ROSARIO_2025 },
+      { type: "player", id: COPETTI },
+    ];
+    const res = await post({ challengeId: id, path, elapsedMs: 6 * MIN_MS_PER_JUMP + 9000 });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body).toMatchObject({ valid: true, result: "won", difficulty: "hard", isOptimal: true });
+    expect(body.optimal.pathsCount).toBe(2);
+    expect(body.optimal.paths).toHaveLength(2);
+    const middles = body.optimal.paths.map((p: { label: string }[]) => p[2].label);
+    expect(middles).toEqual(["Lionel Messi", "Neymar"]);
   });
 
   it("camino inválido: 422 y sin ninguna pista de la solución", async () => {
@@ -130,7 +201,7 @@ describe.skipIf(!hasDb)("POST /api/challenge/finish (integración)", () => {
       const body = await res.json();
       expect(body).toMatchObject({ valid: true, result: "lost", jumps: 2, gaveUp: true });
       expect(body.optimal.length).toBe(4);
-      expect(body.optimal.path).toHaveLength(5);
+      expect(body.optimal.paths[0]).toHaveLength(5);
     });
 
     it("rendirse sin haber hecho saltos también es válido", async () => {
@@ -183,7 +254,7 @@ describe.skipIf(!hasDb)("POST /api/challenge/finish (integración)", () => {
     ];
     const res = await post({ challengeId: id, path, elapsedMs: 4 * MIN_MS_PER_JUMP + 5000 });
     expect(res.status).toBe(200);
-    expect(await res.json()).toMatchObject({ valid: true, result: "won", difficulty: "medium" });
+    expect(await res.json()).toMatchObject({ valid: true, result: "won", difficulty: "normal" });
   });
 
   it("un desafío futuro no existe todavía: 404 (no se puede espiar la solución)", async () => {

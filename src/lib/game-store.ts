@@ -1,4 +1,5 @@
 import { challengeDateFor } from "@/domain/daily-date";
+import type { Difficulty } from "@/domain/difficulty";
 import type { GameState } from "@/domain/game";
 import { deserializeGame, serializeGame } from "@/domain/persistence";
 import type { FinishResult } from "./api-client";
@@ -11,15 +12,17 @@ export interface Session {
 }
 
 /**
- * Dónde se guarda una partida: el desafío diario (una sola, la de hoy) o un desafío pasado (una por fecha).
- * Por defecto es el diario, así el código existente no cambia.
+ * Dónde se guarda una partida: un desafío diario (una por nivel, la de hoy) o un desafío pasado (una por fecha y nivel).
  */
-export type Scope = "daily" | { archive: string };
+export type Scope = { daily: Difficulty } | { archive: string; level: Difficulty };
 
 const PREFIX = "footygame:v1:";
 
 function keys(scope: Scope): { game: string; labels: string; result: string } {
-  const base = scope === "daily" ? PREFIX : `${PREFIX}archive:${scope.archive}:`;
+  const base =
+    "daily" in scope
+      ? `${PREFIX}daily:${scope.daily}:`
+      : `${PREFIX}archive:${scope.archive}:${scope.level}:`;
   return { game: `${base}game`, labels: `${base}labels`, result: `${base}result` };
 }
 
@@ -72,7 +75,10 @@ function parseResult(raw: string | null): FinishResult | null {
   if (!raw) return null;
   try {
     const data = JSON.parse(raw) as Partial<FinishResult> | null;
-    return data && data.valid === true && typeof data.jumps === "number" && data.optimal
+    return data &&
+      data.valid === true &&
+      typeof data.jumps === "number" &&
+      Array.isArray(data.optimal?.paths)
       ? (data as FinishResult)
       : null;
   } catch {
@@ -87,43 +93,48 @@ function readSession(scope: Scope): Session | null {
   return { game, labels: parseLabels(read(k.labels)), result: parseResult(read(k.result)) };
 }
 
-/** Partida guardada del desafío de hoy, o null si no hay (una partida de otro día se descarta). */
-export function readTodaySession(now = Date.now()): Session | null {
-  const session = readSession("daily");
+/** Partida guardada del desafío de hoy en ese nivel, o null si no hay (una partida de otro día se descarta). */
+export function readTodaySession(level: Difficulty, now = Date.now()): Session | null {
+  const session = readSession({ daily: level });
   if (!session) return null;
   if (session.game.challenge.date !== challengeDateFor(now)) {
-    clearSession();
+    clearSession({ daily: level });
     return null;
   }
   return session;
 }
 
 /** Partida guardada de un desafío pasado. Ignora una sesión que corresponda a otra fecha. */
-export function readArchiveSession(date: string): Session | null {
-  const session = readSession({ archive: date });
+export function readArchiveSession(date: string, level: Difficulty): Session | null {
+  const session = readSession({ archive: date, level });
   return session && session.game.challenge.date === date ? session : null;
 }
 
-/** Estado de cada una de las fechas pasadas que tienen una partida guardada. */
+/** Clave de un desafío pasado en `readArchiveStatuses`: "2026-10-12:hard". */
+export const archiveKey = (date: string, level: Difficulty): string => `${date}:${level}`;
+
+/** Estado de cada desafío pasado (fecha y nivel) que tiene una partida guardada. */
 export function readArchiveStatuses(
-  dates: readonly string[],
+  items: readonly { date: string; level: Difficulty }[],
 ): Record<string, "playing" | "won" | "lost"> {
   const out: Record<string, "playing" | "won" | "lost"> = {};
-  for (const date of dates) {
-    const status = readArchiveSession(date)?.game.status;
-    if (status === "playing" || status === "won" || status === "lost") out[date] = status;
+  for (const { date, level } of items) {
+    const status = readArchiveSession(date, level)?.game.status;
+    if (status === "playing" || status === "won" || status === "lost") {
+      out[archiveKey(date, level)] = status;
+    }
   }
   return out;
 }
 
-export const writeGame = (game: GameState, scope: Scope = "daily"): void =>
+export const writeGame = (game: GameState, scope: Scope): void =>
   write(keys(scope).game, serializeGame(game));
-export const writeLabels = (labels: Record<string, string>, scope: Scope = "daily"): void =>
+export const writeLabels = (labels: Record<string, string>, scope: Scope): void =>
   write(keys(scope).labels, JSON.stringify(labels));
-export const writeResult = (result: FinishResult, scope: Scope = "daily"): void =>
+export const writeResult = (result: FinishResult, scope: Scope): void =>
   write(keys(scope).result, JSON.stringify(result));
 
-export function clearSession(scope: Scope = "daily"): void {
+export function clearSession(scope: Scope): void {
   const k = keys(scope);
   remove(k.game);
   remove(k.labels);

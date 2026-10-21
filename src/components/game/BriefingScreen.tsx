@@ -37,20 +37,25 @@ export function BriefingScreen({ challenge, mode = "daily" }: BriefingScreenProp
   const [session, setSession] = useState<Session | null | undefined>(undefined);
 
   const archive = mode === "archive";
-  const scope: Scope = archive && challenge ? { archive: challenge.date } : "daily";
-  const base = archive && challenge ? `/${locale}/archive/${challenge.date}` : `/${locale}/daily`;
   const date = challenge?.date;
+  const level = challenge?.difficulty;
+  const scope: Scope | null =
+    date && level ? (archive ? { archive: date, level } : { daily: level }) : null;
+  const base = archive
+    ? `/${locale}/archive/${date}/${level}`
+    : `/${locale}/daily/${level ?? "normal"}`;
 
   useEffect(() => {
     // Lee el almacenamiento del navegador una vez montado (en el servidor no existe).
-    const saved = archive ? (date ? readArchiveSession(date) : null) : readTodaySession();
+    const saved =
+      date && level ? (archive ? readArchiveSession(date, level) : readTodaySession(level)) : null;
     // Una partida terminada antes de existir el historial también cuenta en tus números.
     if (saved?.result && saved.game.status !== "playing" && saved.game.status !== "ready") {
       recordResult(entryFromResult(saved.game, saved.result, mode));
     }
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setSession(saved);
-  }, [archive, date, mode]);
+  }, [archive, date, level, mode]);
 
   if (!challenge) {
     return (
@@ -67,6 +72,7 @@ export function BriefingScreen({ challenge, mode = "daily" }: BriefingScreenProp
   }
 
   const start = () => {
+    if (!scope) return;
     const game = startGame(
       createGame({
         id: challenge.id,
@@ -155,12 +161,17 @@ export function BriefingScreen({ challenge, mode = "daily" }: BriefingScreenProp
       )}
 
       <div className={s.briefLinks}>
+        {!archive && (
+          <Link className="btn btn-ghost" href={`/${locale}/daily`}>
+            {t("daily.otherChallenge")}
+          </Link>
+        )}
         <Link className="btn btn-ghost" href={`/${locale}/archive`}>
           {archive ? t("archive.backToList") : t("archive.link")}
         </Link>
       </div>
 
-      {!archive && <StatsPanel />}
+      {!archive && challenge.difficulty === "normal" && <StatsPanel />}
     </div>
   );
 }

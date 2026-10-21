@@ -1073,3 +1073,79 @@
   align-items: center;
   margin-block: 1.5rem 3rem;
 }
+
+/* Todos los caminos más cortos, en una línea cada uno (origen y destino se muestran una sola vez arriba). */
+.routeEnds {
+  margin: 0 0 0.4rem;
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+.routeList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.routeItem {
+  font-size: 0.9rem;
+  line-height: 1.35;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, currentColor 7%, transparent);
+  overflow-wrap: anywhere;
+}
+
+/* Los dos desafíos de hoy se distinguen a simple vista: el normal es papel claro con una franja amarilla;
+   el difícil, una entrada oscura con franja roja. La franja es una capa más del fondo del papel. */
+.hubNormal::before,
+.hubHard::before {
+  background:
+    linear-gradient(var(--accent), var(--accent)) 0.9rem 50% / 0.35rem calc(100% - 1.4rem) no-repeat,
+    var(--paper);
+}
+
+.hubNormal {
+  --accent: var(--card-yellow);
+  --paper: var(--chalk);
+}
+
+.hubHard {
+  --accent: var(--card-red);
+  --paper: var(--ink);
+  --focus: var(--card-yellow);
+  color: var(--chalk);
+}
+
+.hubHard .archiveLevel {
+  color: var(--chalk-dim);
+}
+
+.hubHard .archiveDate {
+  color: var(--card-yellow);
+}
+
+.hubHard .chipWon {
+  color: #6fe3a1;
+}
+
+.hubHard .chipLost {
+  color: var(--red-text);
+}
+
+.hubHard .chipPlaying {
+  color: var(--sky);
+}
+
+.hubHard .chipNew {
+  border-color: var(--card-yellow);
+}
+
+@media (min-width: 720px) {
+  /* El corte punteado entre el talón y el resto se ve claro sobre el papel oscuro. */
+  .hubHard::after {
+    border-left-color: rgba(241, 243, 236, 0.35);
+  }
+}

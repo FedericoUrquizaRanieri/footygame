@@ -12,7 +12,7 @@ const result: FinishResult = {
   result: "won",
   jumps: 6,
   elapsedMs: 84_000,
-  optimal: { length: 4, pathsCount: 2, path: [] },
+  optimal: { length: 4, pathsCount: 2, paths: [] },
   extraJumps: 2,
   isOptimal: false,
 };

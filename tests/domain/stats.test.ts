@@ -12,7 +12,7 @@ function entry(date: string, over: Partial<HistoryEntry> = {}): HistoryEntry {
     jumps: 4,
     elapsedMs: 60_000,
     optimalLength: 4,
-    difficulty: "medium",
+    difficulty: "normal",
     mode: "daily",
     ...over,
   };
@@ -181,5 +181,20 @@ describe("computeStats: racha", () => {
   it("una victoria de práctica no sostiene la racha del diario", () => {
     const history = [entry("2026-10-08"), entry("2026-10-09", { mode: "archive" })];
     expect(computeStats(history, today).currentStreak).toBe(0);
+  });
+});
+
+describe("computeStats con los dos niveles", () => {
+  it("el desafío difícil todavía no cuenta para las estadísticas ni la racha", () => {
+    const today = "2026-10-12";
+    const history = [
+      entry(shiftDate(today, -1)),
+      entry(today),
+      entry(today, { difficulty: "hard", result: "lost", jumps: 20 }),
+    ];
+    const stats = computeStats(history, today);
+    expect(stats.played).toBe(2);
+    expect(stats.won).toBe(2);
+    expect(stats.currentStreak).toBe(2);
   });
 });
